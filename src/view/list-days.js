@@ -1,6 +1,6 @@
 export const createTripListDays = () => {
-    return (
-        `<ul class="trip-days">
+  return (
+    `<ul class="trip-days">
             <li class="trip-days__item  day">
                 <div class="day__info">
                 </div>
@@ -8,5 +8,5 @@ export const createTripListDays = () => {
                 </ul>
             </li>
         </ul>`
-    )
-}
+  );
+};
