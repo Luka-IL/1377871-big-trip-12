@@ -1,3 +1,43 @@
+import {waypoints, cities} from '../const.js';
+import {generateTrip} from '../mock/trip.js';
+
+const trip = generateTrip();
+const {start, finish} = trip;
+
+
+const toTransport = waypoints.filter((way) => way.action === `to`);
+const inTransport = waypoints.filter((way) => way.action === `in`);
+
+const humansDateStart = () => {
+  return start.toLocaleString(`en-GB`, {day: `numeric`, month: `numeric`, year: `2-digit`, hour: `numeric`, minute: `2-digit`});
+};
+const humansDateFinish = () => {
+  return finish.toLocaleString(`en-GB`, {day: `numeric`, month: `numeric`, year: `2-digit`, hour: `numeric`, minute: `2-digit`});
+};
+
+const generateToTransport = () => {
+  return toTransport.map((way) =>
+    `<div class="event__type-item">
+    <input id="event-type-${way.name}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${way.name}">
+    <label class="event__type-label  event__type-label--${way.name}" for="event-type-${way.name}-1">${way.name[0].toUpperCase()}${way.name.slice(1)}</label>
+  </div>`
+  ).join(``);
+};
+
+const generateInTransport = () => {
+  return inTransport.map((way) =>
+    `<div class="event__type-item">
+    <input id="event-type-${way.name}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${way.name}">
+    <label class="event__type-label  event__type-label--${way.name}" for="event-type-${way.name}-1">${way.name[0].toUpperCase() + way.name.slice(1)}</label>
+  </div>`
+  ).join(``);
+};
+
+const generateCities = () => {
+  return cities.map((city) => `<option value=${city}></option>`
+  );
+};
+
 export const createAddTripEvent = () => {
   return (`
         <form class="trip-events__item  event  event--edit" action="#" method="post">
@@ -12,60 +52,12 @@ export const createAddTripEvent = () => {
                 <div class="event__type-list">
                   <fieldset class="event__type-group">
                     <legend class="visually-hidden">Transfer</legend>
-
-                    <div class="event__type-item">
-                      <input id="event-type-taxi-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="taxi">
-                      <label class="event__type-label  event__type-label--taxi" for="event-type-taxi-1">Taxi</label>
-                    </div>
-
-                    <div class="event__type-item">
-                      <input id="event-type-bus-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="bus">
-                      <label class="event__type-label  event__type-label--bus" for="event-type-bus-1">Bus</label>
-                    </div>
-
-                    <div class="event__type-item">
-                      <input id="event-type-train-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="train">
-                      <label class="event__type-label  event__type-label--train" for="event-type-train-1">Train</label>
-                    </div>
-
-                    <div class="event__type-item">
-                      <input id="event-type-ship-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="ship">
-                      <label class="event__type-label  event__type-label--ship" for="event-type-ship-1">Ship</label>
-                    </div>
-
-                    <div class="event__type-item">
-                      <input id="event-type-transport-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="transport">
-                      <label class="event__type-label  event__type-label--transport" for="event-type-transport-1">Transport</label>
-                    </div>
-
-                    <div class="event__type-item">
-                      <input id="event-type-drive-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="drive">
-                      <label class="event__type-label  event__type-label--drive" for="event-type-drive-1">Drive</label>
-                    </div>
-
-                    <div class="event__type-item">
-                      <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight" checked>
-                      <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">Flight</label>
-                    </div>
+                    ${generateToTransport()}
                   </fieldset>
 
                   <fieldset class="event__type-group">
                     <legend class="visually-hidden">Activity</legend>
-
-                    <div class="event__type-item">
-                      <input id="event-type-check-in-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="check-in">
-                      <label class="event__type-label  event__type-label--check-in" for="event-type-check-in-1">Check-in</label>
-                    </div>
-
-                    <div class="event__type-item">
-                      <input id="event-type-sightseeing-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="sightseeing">
-                      <label class="event__type-label  event__type-label--sightseeing" for="event-type-sightseeing-1">Sightseeing</label>
-                    </div>
-
-                    <div class="event__type-item">
-                      <input id="event-type-restaurant-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="restaurant">
-                      <label class="event__type-label  event__type-label--restaurant" for="event-type-restaurant-1">Restaurant</label>
-                    </div>
+                    ${generateInTransport()}
                   </fieldset>
                 </div>
               </div>
@@ -76,10 +68,7 @@ export const createAddTripEvent = () => {
                 </label>
                 <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="" list="destination-list-1">
                 <datalist id="destination-list-1">
-                  <option value="Amsterdam"></option>
-                  <option value="Geneva"></option>
-                  <option value="Chamonix"></option>
-                  <option value="Saint Petersburg"></option>
+                ${generateCities()}
                 </datalist>
               </div>
 
@@ -87,12 +76,12 @@ export const createAddTripEvent = () => {
                 <label class="visually-hidden" for="event-start-time-1">
                   From
                 </label>
-                <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="18/03/19 00:00">
+                <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${humansDateStart()}">
                 &mdash;
                 <label class="visually-hidden" for="event-end-time-1">
                   To
                 </label>
-                <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="18/03/19 00:00">
+                <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${humansDateFinish()}">
               </div>
 
               <div class="event__field-group  event__field-group--price">
@@ -100,7 +89,7 @@ export const createAddTripEvent = () => {
                   <span class="visually-hidden">Price</span>
                   &euro;
                 </label>
-                <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="">
+                <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${trip.price}">
               </div>
 
               <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
