@@ -6,6 +6,7 @@ import {createTripListDays} from './view/list-days.js';
 import {createTripDay} from './view/trip-day.js';
 import {createTripEvent} from './view/trip-event.js';
 import {createAddTripEvent} from './view/add-event.js';
+import {trips, TRIP_COUNT} from './mock/array-trips.js';
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -27,10 +28,23 @@ render(tripEvents, createSortTripEvent(), `afterbegin`);
 render(tripEvents, createAddTripEvent(), `beforeend`);
 render(tripEvents, createTripListDays(), `beforeend`);
 
-const dayInfo = tripEvents.querySelector(`.day__info`);
-const tripEventsList = tripEvents.querySelector(`.trip-events__list`);
+const dayInfo = tripEvents.querySelector(`.trip-days`);
+let numberTrip = 0;
+const createNewDay = () => {
 
-render(dayInfo, createTripDay(), `afterbegin`);
-render(tripEventsList, createTripEvent(), `beforeend`);
-render(tripEventsList, createTripEvent(), `beforeend`);
-render(tripEventsList, createTripEvent(), `beforeend`);
+  render(dayInfo, createTripDay(), `beforeend`);
+  const tripEventsList = dayInfo.querySelectorAll(`.trip-events__list`);
+  let dataTripNow = trips[numberTrip].start.getDate();
+  for (numberTrip; numberTrip < TRIP_COUNT; numberTrip++) {
+    if (dataTripNow === trips[numberTrip].start.getDate()) {
+      render(tripEventsList[tripEventsList.length - 1], createTripEvent(trips[numberTrip]), `beforeend`);
+    } else {
+      if (trips.length > numberTrip) {
+        createNewDay();
+        numberTrip++;
+      }
+      break;
+    }
+  }
+};
+createNewDay();
