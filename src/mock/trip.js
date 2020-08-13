@@ -14,7 +14,7 @@ const cityName = () => {
 };
 
 const randomInformation = () => {
-  const randomSum = getRandomInteger(0, 5);
+  const randomSum = getRandomInteger(2, 5);
   let informationTravel = ``;
   for (let i = 0; i < randomSum; i++) {
     const randomIndex = getRandomInteger(0, informations.length - 1);
@@ -23,7 +23,7 @@ const randomInformation = () => {
   return informationTravel;
 };
 
-const randomOffers = () => {
+const getRandomOffers = () => {
   let offersOneTrip = [];
   const offersGroupTrip = Object.entries(offersTrip);
   let indexOffers = -1;
@@ -64,7 +64,7 @@ export const generateTrip = () => {
   const finish = finishDate(start);
   const price = getRandomInteger(0, 300);
   const duration = Math.round((finish - start) / 60000);
-  const offers = randomOffers();
+  const offers = getRandomOffers();
   return {
     transport,
     city,

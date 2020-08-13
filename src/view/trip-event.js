@@ -1,5 +1,5 @@
 export const createTripEvent = (trip) => {
-  const {transport, city, start, finish, price, offers, duration, destination} = trip;
+  const {transport, city, start, finish, price, offers, duration} = trip;
 
   const generateOffers = (offer) => {
     const newOffers = offer.map(([, object]) =>
@@ -36,7 +36,7 @@ export const createTripEvent = (trip) => {
     `<li class="trip-events__item">
         <div class="event">
           <div class="event__type">
-            <img class="event__type-icon" width="42" height="42" src=${destination.picture} alt="Event type icon">
+            <img class="event__type-icon" width="42" height="42" src=${transport.picture} alt="Event type icon">
           </div>
           <h3 class="event__title">${transport.name} ${transport.action} ${city}</h3>
 

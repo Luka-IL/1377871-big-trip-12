@@ -9,7 +9,7 @@ const priceAllTrips = () => {
 };
 
 const allVisitCities = () => {
-  const cityName = trips.map((city) => city.city);
+  const cityName = trips.map((town) => town.city);
   let cityBefore = ``;
   let massCities = [];
   for (let i = 0; i < cityName.length; i++) {
@@ -18,7 +18,11 @@ const allVisitCities = () => {
       cityBefore = cityName[i];
     }
   }
-  return massCities.map((point) => `${point}`).join(` &mdash; `);
+  if (massCities.length <= 3) {
+    return massCities.map((point) => `${point}`).join(` &mdash; `);
+  } else {
+    return `${massCities[0]} &mdash; ... &mdash; ${massCities[massCities.length - 1]}`;
+  }
 };
 
 export const createTripInfo = () => {

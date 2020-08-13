@@ -2,7 +2,7 @@ import {waypoints, cities} from '../const.js';
 import {generateTrip} from '../mock/trip.js';
 
 const trip = generateTrip();
-const {start, finish} = trip;
+const {start, finish, destination, offers} = trip;
 
 
 const toTransport = waypoints.filter((way) => way.action === `to`);
@@ -36,6 +36,11 @@ const generateInTransport = () => {
 const generateCities = () => {
   return cities.map((city) => `<option value=${city}></option>`
   );
+};
+
+const createPictureDestination = () => {
+  const trips = new Array(5).fill().map(() => `<img class="event__photo" src="http://picsum.photos/248/152?r=${Math.random()}" alt="Event photo">`);
+  return trips;
 };
 
 export const createAddTripEvent = () => {
@@ -146,6 +151,16 @@ export const createAddTripEvent = () => {
                   </div>
                 </div>
               </section>
+              <section class="event__section  event__section--destination">
+              <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+              <p class="event__destination-description">${destination.information}</p>
+
+              <div class="event__photos-container">
+                <div class="event__photos-tape">
+                ${createPictureDestination()}
+                </div>
+              </div>
+            </section>
             </section>
           </form>`
   );

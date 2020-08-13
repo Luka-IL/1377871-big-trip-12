@@ -31,7 +31,6 @@ render(tripEvents, createTripListDays(), `beforeend`);
 const dayInfo = tripEvents.querySelector(`.trip-days`);
 let numberTrip = 0;
 const createNewDay = () => {
-
   render(dayInfo, createTripDay(), `beforeend`);
   const tripEventsList = dayInfo.querySelectorAll(`.trip-events__list`);
   let dataTripNow = trips[numberTrip].start.getDate();
