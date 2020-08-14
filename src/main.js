@@ -6,13 +6,14 @@ import TripListDays from './view/list-days.js';
 import TripDay from './view/trip-day.js';
 import TripEvent from './view/trip-event.js';
 import AddTripEvent from './view/add-event.js';
-import TripEventsList from './view/trip-events-list';
+import TripEventsList from './view/trip-events-list.js';
+import WithoutTripEvent from './view/without-trip.js';
 import {trips, TRIP_COUNT} from './mock/array-trips.js';
 import {renderElement, RenderPosition} from "./utils.js";
 
 const tripMain = document.querySelector(`.trip-main`);
 
-renderElement(tripMain, new TripInfo().getElement(), RenderPosition.BEFOREEND);
+renderElement(tripMain, new TripInfo().getElement(), RenderPosition.AFTERBEGIN);
 
 const tripControls = tripMain.querySelector(`.trip-controls`);
 
@@ -22,9 +23,7 @@ renderElement(tripControls, new TripListFilter().getElement(), RenderPosition.BE
 const pageMain = document.querySelector(`.page-main`);
 const tripEvents = pageMain.querySelector(`.trip-events`);
 
-const dayInfo = new TripListDays().getElement();
 renderElement(tripEvents, new SortTripEvent().getElement(), RenderPosition.AFTERBEGIN);
-renderElement(tripEvents, dayInfo, RenderPosition.BEFOREEND);
 
 const renderTripEvent = (tripListElement, trip) => {
   const tripComponent = new TripEvent(trip);
@@ -38,13 +37,23 @@ const renderTripEvent = (tripListElement, trip) => {
     tripListElement.replaceChild(tripComponent.getElement(), tripAddComponent.getElement());
   };
 
+  const onEscKeyDown = (evt) => {
+    if (evt.key === `Escape` || evt.key === `Esc`) {
+      evt.preventDefault();
+      replaceFormToCard();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
+
   tripComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
     replaceCardToForm();
+    document.addEventListener(`keydown`, onEscKeyDown);
   });
 
   tripAddComponent.getElement().addEventListener(`submit`, (evt) => {
     evt.preventDefault();
     replaceFormToCard();
+    document.removeEventListener(`keydown`, onEscKeyDown);
   });
 
 
@@ -52,22 +61,30 @@ const renderTripEvent = (tripListElement, trip) => {
 };
 
 let numberTrip = 0;
-const createNewDay = () => {
-  const EventsDay = new TripDay().getElement();
-  const EventsDayList = new TripEventsList().getElement();
-  renderElement(dayInfo, EventsDay, RenderPosition.BEFOREEND);
-  renderElement(EventsDay, EventsDayList, RenderPosition.BEFOREEND);
-  let dataTripNow = trips[numberTrip].start.getDate();
-  for (numberTrip; numberTrip < TRIP_COUNT; numberTrip++) {
-    if (dataTripNow === trips[numberTrip].start.getDate()) {
-      renderTripEvent(EventsDayList, trips[numberTrip]);
-    } else {
-      if (trips.length > numberTrip) {
-        createNewDay();
-        numberTrip++;
+if (TRIP_COUNT > 0) {
+  const createNewDay = () => {
+    const dayInfo = new TripListDays().getElement();
+    const EventsDay = new TripDay(trips[numberTrip]).getElement();
+    const EventsDayList = new TripEventsList().getElement();
+
+    renderElement(tripEvents, dayInfo, RenderPosition.BEFOREEND);
+    renderElement(dayInfo, EventsDay, RenderPosition.BEFOREEND);
+    renderElement(EventsDay, EventsDayList, RenderPosition.BEFOREEND);
+    let dataTripNow = trips[numberTrip].start.getDate();
+    for (numberTrip; numberTrip < TRIP_COUNT; numberTrip++) {
+      if (dataTripNow === trips[numberTrip].start.getDate()) {
+        renderTripEvent(EventsDayList, trips[numberTrip]);
+      } else {
+        if (trips.length > numberTrip) {
+          createNewDay();
+          numberTrip++;
+        }
+        break;
       }
-      break;
     }
-  }
-};
-createNewDay();
+  };
+  createNewDay();
+} else {
+  renderElement(tripEvents, new WithoutTripEvent().getElement(), RenderPosition.BEFOREEND);
+}
+
