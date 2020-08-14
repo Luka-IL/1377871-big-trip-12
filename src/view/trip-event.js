@@ -1,3 +1,5 @@
+import {createElement} from "../utils";
+
 export const createTripEvent = (trip) => {
   const {transport, city, start, finish, price, offers, duration} = trip;
 
@@ -65,3 +67,25 @@ export const createTripEvent = (trip) => {
       </li>`
   );
 };
+
+export default class TripEvent {
+  constructor(trip) {
+    this._element = null;
+    this._trip = trip;
+  }
+
+  getTemplate() {
+    return createTripEvent(this._trip);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

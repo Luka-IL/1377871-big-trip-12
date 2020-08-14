@@ -1,5 +1,7 @@
 import {waypoints, cities} from '../const.js';
 import {generateTrip} from '../mock/trip.js';
+import {createElement} from "../utils";
+
 
 const trip = generateTrip();
 const {start, finish, destination, offers} = trip;
@@ -43,9 +45,8 @@ const createPictureDestination = () => {
   return trips;
 };
 
-export const createAddTripEvent = () => {
-  return (`
-        <form class="trip-events__item  event  event--edit" action="#" method="post">
+const createAddTripEvent = () => {
+  return `<form class="trip-events__item  event  event--edit" action="#" method="post">
             <header class="event__header">
               <div class="event__type-wrapper">
                 <label class="event__type  event__type-btn" for="event-type-toggle-1">
@@ -162,6 +163,27 @@ export const createAddTripEvent = () => {
               </div>
             </section>
             </section>
-          </form>`
-  );
+          </form>`;
 };
+
+export default class AddTripEvent {
+  constructor() {
+    this._element = null;
+    this._trip = trip;
+  }
+
+  getTemplate() {
+    return createAddTripEvent(this._trip);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

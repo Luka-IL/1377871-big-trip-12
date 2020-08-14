@@ -1,4 +1,6 @@
 import {trips, TRIP_COUNT} from '../mock/array-trips.js';
+import {createElement} from "../utils.js";
+
 
 const priceAllTrips = () => {
   let priceTrips = 0;
@@ -25,9 +27,8 @@ const allVisitCities = () => {
   }
 };
 
-export const createTripInfo = () => {
-  return (
-    `<section class="trip-main__trip-info  trip-info">
+const createTripInfo = () => {
+  return `<section class="trip-main__trip-info  trip-info">
         <div class="trip-info__main">
           <h1 class="trip-info__title">${allVisitCities()}</h1>
 
@@ -37,6 +38,27 @@ export const createTripInfo = () => {
         <p class="trip-info__cost">
           Total: &euro;&nbsp;<span class="trip-info__cost-value">${priceAllTrips()}</span>
         </p>
-      </section>`
-  );
+      </section>`;
 };
+
+export default class TripInfo {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripInfo();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+
+}
