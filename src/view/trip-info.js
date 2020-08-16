@@ -1,4 +1,6 @@
 import {trips, TRIP_COUNT} from '../mock/array-trips.js';
+import {createElement} from "../utils.js";
+
 
 const priceAllTrips = () => {
   let priceTrips = 0;
@@ -9,7 +11,7 @@ const priceAllTrips = () => {
 };
 
 const allVisitCities = () => {
-  const cityName = trips.map((city) => city.city);
+  const cityName = trips.map((town) => town.city);
   let cityBefore = ``;
   let massCities = [];
   for (let i = 0; i < cityName.length; i++) {
@@ -18,12 +20,15 @@ const allVisitCities = () => {
       cityBefore = cityName[i];
     }
   }
-  return massCities.map((point) => `${point}`).join(` &mdash; `);
+  if (massCities.length <= 3) {
+    return massCities.map((point) => `${point}`).join(` &mdash; `);
+  } else {
+    return `${massCities[0]} &mdash; ... &mdash; ${massCities[massCities.length - 1]}`;
+  }
 };
 
-export const createTripInfo = () => {
-  return (
-    `<section class="trip-main__trip-info  trip-info">
+const createTripInfo = () => {
+  return `<section class="trip-main__trip-info  trip-info">
         <div class="trip-info__main">
           <h1 class="trip-info__title">${allVisitCities()}</h1>
 
@@ -33,6 +38,27 @@ export const createTripInfo = () => {
         <p class="trip-info__cost">
           Total: &euro;&nbsp;<span class="trip-info__cost-value">${priceAllTrips()}</span>
         </p>
-      </section>`
-  );
+      </section>`;
 };
+
+export default class TripInfo {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripInfo();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+
+}

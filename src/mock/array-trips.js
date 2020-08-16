@@ -1,7 +1,7 @@
 
 import {generateTrip} from '../mock/trip.js';
 
-export const TRIP_COUNT = 9;
+export const TRIP_COUNT = 8;
 export const trips = new Array(TRIP_COUNT).fill().map(generateTrip).sort((a, b) => {
   if (a.start > b.start) {
     return 1;

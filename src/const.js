@@ -3,52 +3,52 @@ import {getRandomInteger} from './utils.js';
 const taxi = {
   name: `taxi`,
   action: `to`,
-  picture: `http://picsum.photos/248/152?r=${Math.random()}`
+  picture: `./img/icons/taxi.png`
 };
 const bus = {
   name: `bus`,
   action: `to`,
-  picture: `http://picsum.photos/248/152?r=${Math.random()}`
+  picture: `../img/icons/bus.png`
 };
 const train = {
   name: `train`,
   action: `to`,
-  picture: `http://picsum.photos/248/152?r=${Math.random()}`
+  picture: `../img/icons/train.png`
 };
 const ship = {
   name: `ship`,
   action: `to`,
-  picture: `http://picsum.photos/248/152?r=${Math.random()}`
+  picture: `../img/icons/ship.png`
 };
 const transport = {
   name: `transport`,
   action: `to`,
-  picture: `http://picsum.photos/248/152?r=${Math.random()}`
+  picture: `../img/icons/transport.png`
 };
 const drive = {
   name: `drive`,
   action: `to`,
-  picture: `http://picsum.photos/248/152?r=${Math.random()}`
+  picture: `../img/icons/drive.png`
 };
 const fly = {
   name: `fly`,
   action: `to`,
-  picture: `http://picsum.photos/248/152?r=${Math.random()}`
+  picture: `../img/icons/flight.png`
 };
 const check = {
   name: `check-in`,
   action: `in`,
-  picture: `http://picsum.photos/248/152?r=${Math.random()}`
+  picture: `../img/icons/check-in.png`
 };
 const sightseeing = {
   name: `sightseeing`,
   action: `in`,
-  picture: `http://picsum.photos/248/152?r=${Math.random()}`
+  picture: `../img/icons/sightseeing.png`
 };
 const restaurant = {
   name: `restaurant`,
   action: `in`,
-  picture: `http://picsum.photos/248/152?r=${Math.random()}`
+  picture: `../img/icons/restaurant.png`
 };
 
 export const waypoints = [taxi, bus, train, ship, transport, drive, fly, check, sightseeing, restaurant];

@@ -1,8 +1,10 @@
 import {waypoints, cities} from '../const.js';
 import {generateTrip} from '../mock/trip.js';
+import {createElement} from "../utils";
+
 
 const trip = generateTrip();
-const {start, finish} = trip;
+const {start, finish, destination, offers} = trip;
 
 
 const toTransport = waypoints.filter((way) => way.action === `to`);
@@ -38,9 +40,13 @@ const generateCities = () => {
   );
 };
 
-export const createAddTripEvent = () => {
-  return (`
-        <form class="trip-events__item  event  event--edit" action="#" method="post">
+const createPictureDestination = () => {
+  const trips = new Array(5).fill().map(() => `<img class="event__photo" src="http://picsum.photos/248/152?r=${Math.random()}" alt="Event photo">`);
+  return trips;
+};
+
+const createAddTripEvent = () => {
+  return `<form class="trip-events__item  event  event--edit" action="#" method="post">
             <header class="event__header">
               <div class="event__type-wrapper">
                 <label class="event__type  event__type-btn" for="event-type-toggle-1">
@@ -146,7 +152,38 @@ export const createAddTripEvent = () => {
                   </div>
                 </div>
               </section>
+              <section class="event__section  event__section--destination">
+              <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+              <p class="event__destination-description">${destination.information}</p>
+
+              <div class="event__photos-container">
+                <div class="event__photos-tape">
+                ${createPictureDestination()}
+                </div>
+              </div>
             </section>
-          </form>`
-  );
+            </section>
+          </form>`;
 };
+
+export default class AddTripEvent {
+  constructor() {
+    this._element = null;
+    this._trip = trip;
+  }
+
+  getTemplate() {
+    return createAddTripEvent(this._trip);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
