@@ -1,31 +1,29 @@
-import {trips} from '../mock/array-trips.js';
 import {createElement} from "../utils";
 
-
 let dayCounter = 0;
-const startMonth = trips[0].start.toLocaleString(`en-US`, {month: `long`});
-let startDay = trips[0].start.getDate();
 
-const createTripDay = () => {
+const createTripDay = (trip) => {
+  const startMonth = trip.start.toLocaleString(`en-US`, {month: `long`});
+  const startDay = trip.start.getDate();
   dayCounter++;
-  startDay++;
   return (
     `<li class="trip-days__item  day">
       <div class="day__info">
         <span class="day__counter">${dayCounter}</span>
-        <time class="day__date" datetime="${trips[1].start}">${startDay - 1} ${startMonth}</time>
+        <time class="day__date" datetime="${trip.start}">${startDay} ${startMonth}</time>
       </div>
     </li>`
   );
 };
 
-export default class TripListDays {
-  constructor() {
+export default class TripDay {
+  constructor(trip) {
     this._element = null;
+    this._trip = trip;
   }
 
   getTemplate() {
-    return createTripDay();
+    return createTripDay(this._trip);
   }
 
   getElement() {
