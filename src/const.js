@@ -1,4 +1,4 @@
-import {getRandomInteger} from './utils.js';
+import {getRandomBoolean} from './utils/common.js';
 
 const taxi = {
   name: `taxi`,
@@ -55,31 +55,31 @@ export const waypoints = [taxi, bus, train, ship, transport, drive, fly, check, 
 
 export const offersTrip = {
   luggage: {
-    active: Boolean(getRandomInteger(0, 1)),
+    active: getRandomBoolean(),
     type: `offers`,
     name: `Add luggage`,
     price: 30
   },
   comfort: {
-    active: Boolean(getRandomInteger(0, 1)),
+    active: getRandomBoolean(),
     type: `offers`,
     name: `Switch to comfort class`,
     price: 100
   },
   meal: {
-    active: Boolean(getRandomInteger(0, 1)),
+    active: getRandomBoolean(),
     type: `offers`,
     name: `Add meal`,
     price: 15
   },
   seats: {
-    active: Boolean(getRandomInteger(0, 1)),
+    active: getRandomBoolean(),
     type: `offers`,
     name: `Choose seats`,
     price: 5
   },
   train: {
-    active: Boolean(getRandomInteger(0, 1)),
+    active: getRandomBoolean(),
     type: `offers`,
     name: `Travel by train`,
     price: 40

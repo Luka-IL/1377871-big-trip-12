@@ -1,5 +1,5 @@
 import {trips, TRIP_COUNT} from '../mock/array-trips.js';
-import {createElement} from "../utils.js";
+import AbstractView from "./abstract.js";
 
 
 const priceAllTrips = () => {
@@ -10,7 +10,7 @@ const priceAllTrips = () => {
   return priceTrips;
 };
 
-const allVisitCities = () => {
+const getAllVisitCities = () => {
   const cityName = trips.map((town) => town.city);
   let cityBefore = ``;
   let massCities = [];
@@ -27,12 +27,20 @@ const allVisitCities = () => {
   }
 };
 
+const getAllTripDates = () => {
+  if (trips.length > 0) {
+    return `${trips[0].start.toLocaleString(`en-US`, {month: `long`})}  ${trips[0].start.getDate()}&nbsp;&mdash;&nbsp;${trips[trips.length - 1].finish.getDate()}`;
+  } else {
+    return ``;
+  }
+};
+
 const createTripInfo = () => {
   return `<section class="trip-main__trip-info  trip-info">
         <div class="trip-info__main">
-          <h1 class="trip-info__title">${allVisitCities()}</h1>
+          <h1 class="trip-info__title">${getAllVisitCities()}</h1>
 
-          <p class="trip-info__dates">${trips[0].start.toLocaleString(`en-US`, {month: `long`})}npm  ${trips[0].start.getDate()}&nbsp;&mdash;&nbsp;${trips[trips.length - 1].finish.getDate()}</p>
+          <p class="trip-info__dates">${getAllTripDates()}</p>
         </div>
 
         <p class="trip-info__cost">
@@ -41,24 +49,8 @@ const createTripInfo = () => {
       </section>`;
 };
 
-export default class TripInfo {
-  constructor() {
-    this._element = null;
-  }
-
+export default class TripInfo extends AbstractView {
   getTemplate() {
     return createTripInfo();
   }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
-
 }
