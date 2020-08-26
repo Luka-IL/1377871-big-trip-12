@@ -1,6 +1,5 @@
 import AbstractView from "./abstract.js";
 
-
 let dayCounter = 0;
 
 const createTripDay = (trip) => {

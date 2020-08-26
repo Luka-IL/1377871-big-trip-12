@@ -18,3 +18,4 @@ const tripEvents = pageMain.querySelector(`.trip-events`);
 
 const allTrip = new Trip(tripEvents);
 allTrip.init();
+
