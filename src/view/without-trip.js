@@ -12,3 +12,4 @@ export default class WithoutTripEvent extends AbstractView {
     return createWithoutTripEvent();
   }
 }
+
