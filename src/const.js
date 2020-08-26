@@ -96,3 +96,10 @@ export const informations = [`Lorem ipsum dolor sit amet, consectetur adipiscing
   `Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`,
   `Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.`,
   `Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat.`];
+
+export const SortType = {
+  TIME: `time`,
+  EVENT: `event`,
+  PRICE: `price`,
+};
+

@@ -40,7 +40,7 @@ const getRandomOffers = () => {
 };
 
 
-let finishDateNow = new Date();
+let finishDateNow = new Date(20, 8, 12);
 const startDate = (finishTime) => {
   let finishHours = finishTime.getHours();
   let finishMinutes = finishTime.getMinutes();

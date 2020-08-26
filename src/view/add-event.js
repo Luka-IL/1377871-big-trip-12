@@ -4,7 +4,7 @@ import AbstractView from "./abstract.js";
 
 
 const trip = generateTrip();
-const {start, finish, destination, offers} = trip;
+const {start, finish, destination} = trip;
 
 
 const toTransport = waypoints.filter((way) => way.action === `to`);
