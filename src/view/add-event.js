@@ -1,10 +1,10 @@
 import {waypoints, cities} from '../const.js';
 import {generateTrip} from '../mock/trip.js';
-import {createElement} from "../utils";
+import AbstractView from "./abstract.js";
 
 
 const trip = generateTrip();
-const {start, finish, destination, offers} = trip;
+const {start, finish, destination} = trip;
 
 
 const toTransport = waypoints.filter((way) => way.action === `to`);
@@ -166,24 +166,24 @@ const createAddTripEvent = () => {
           </form>`;
 };
 
-export default class AddTripEvent {
+export default class AddTripEvent extends AbstractView {
   constructor() {
-    this._element = null;
+    super();
     this._trip = trip;
+    this._submitFormEvent = this._submitFormEvent.bind(this);
   }
 
   getTemplate() {
     return createAddTripEvent(this._trip);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
+  _submitFormEvent(evt) {
+    evt.preventDefault();
+    this._callback.submitForm();
   }
 
-  removeElement() {
-    this._element = null;
+  setSubmitFormEvent(callback) {
+    this._callback.submitForm = callback;
+    this.getElement().addEventListener(`submit`, this._submitFormEvent);
   }
 }

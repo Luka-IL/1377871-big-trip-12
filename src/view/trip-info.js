@@ -1,5 +1,5 @@
 import {trips, TRIP_COUNT} from '../mock/array-trips.js';
-import {createElement} from "../utils.js";
+import AbstractView from "./abstract.js";
 
 
 const priceAllTrips = () => {
@@ -33,7 +33,7 @@ const getAllTripDates = () => {
   } else {
     return ``;
   }
-}
+};
 
 const createTripInfo = () => {
   return `<section class="trip-main__trip-info  trip-info">
@@ -49,24 +49,8 @@ const createTripInfo = () => {
       </section>`;
 };
 
-export default class TripInfo {
-  constructor() {
-    this._element = null;
-  }
-
+export default class TripInfo extends AbstractView {
   getTemplate() {
     return createTripInfo();
   }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
-
 }

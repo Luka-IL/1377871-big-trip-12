@@ -1,4 +1,4 @@
-import {createElement} from "../utils";
+import AbstractView from "./abstract.js";
 
 export const createTripEvent = (trip) => {
   const {transport, city, start, finish, price, offers, duration} = trip;
@@ -68,24 +68,24 @@ export const createTripEvent = (trip) => {
   );
 };
 
-export default class TripEvent {
+export default class TripEvent extends AbstractView {
   constructor(trip) {
-    this._element = null;
+    super();
     this._trip = trip;
+    this._clickCardArrow = this._clickCardArrow.bind(this);
   }
 
   getTemplate() {
     return createTripEvent(this._trip);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
+  _clickCardArrow(evt) {
+    evt.preventDefault();
+    this._callback.click();
   }
 
-  removeElement() {
-    this._element = null;
+  setClickCardArrow(callback) {
+    this._callback.click = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickCardArrow);
   }
 }
