@@ -17,5 +17,6 @@ const pageMain = document.querySelector(`.page-main`);
 const tripEvents = pageMain.querySelector(`.trip-events`);
 
 const allTrip = new Trip(tripEvents);
+
 allTrip.init();
 
