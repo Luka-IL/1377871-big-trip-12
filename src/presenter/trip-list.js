@@ -8,29 +8,37 @@ import {trips, TRIP_COUNT} from '../mock/array-trips.js';
 import {sortPrice, sortEvent, sortTime} from "../utils/trip.js";
 import {RenderPosition, render} from "../utils/render.js";
 import {SortType} from '../const.js';
+import {updateItem} from '../utils/common.js';
 
 export default class TripList {
   constructor(boardContainer) {
     this._boardContainer = boardContainer;
 
     this._sortComponent = new SortTripEvent();
-    this._tripListDays = new TripListDays();
+    this._tripListDays = null;
     this._withoutTripEvent = new WithoutTripEvent();
     this._numberTrip = 0;
     this._currentSortType = `time`;
+    this._eventPresenter = {};
 
+    this._handleEventChange = this._handleEventChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
-
   }
 
   init() {
     this._trips = trips.slice();
+
     this._renderSort();
     if (TRIP_COUNT > 0) {
       this._createNewListDay();
     } else {
       render(this._boardContainer, new WithoutTripEvent(), RenderPosition.BEFOREEND);
     }
+  }
+
+  _handleEventChange(updateEvent) {
+    this._trips = updateItem(this._trips, updateEvent);
+    this._eventPresenter[updateEvent.id].init(updateEvent);
   }
 
   _sortTrips(sortType) {
@@ -50,12 +58,19 @@ export default class TripList {
   }
 
   _clearEventList() {
-    this._tripListDays.getElement().innerHTML = ``;
-    this._tripEventsList.getElement().innerHTML = ``;
+    Object
+    .values(this._eventPresenter)
+    .forEach((presenter) => presenter.destroy());
+    this._eventPresenter = {};
+    this._tripListDays.getElement().remove();
+    this._tripListDays = null;
   }
 
   _createNewSortTrips() {
     this._tripDaySort = new TripDay();
+    this._tripListDays = new TripListDays();
+
+    render(this._boardContainer, this._tripListDays, RenderPosition.BEFOREEND);
     render(this._tripListDays, this._tripDaySort, RenderPosition.BEFOREEND);
     render(this._tripDaySort, this._tripEventsList, RenderPosition.BEFOREEND);
 
@@ -72,7 +87,7 @@ export default class TripList {
       this._clearEventList();
       if (sortType === `time`) {
         this._numberTrip = 0;
-        this._createNewDay();
+        this._createNewListDay();
       } else {
         this._createNewSortTrips();
       }
@@ -85,13 +100,15 @@ export default class TripList {
   }
 
   _renderTripEvent(tripListElement, trip) {
-    const tripEvent = new Trip(tripListElement);
+    const tripEvent = new Trip(tripListElement, this._handleEventChange);
     tripEvent.init(trip);
+    this._eventPresenter[trip.id] = tripEvent;
+
   }
 
   _createNewListDay() {
+    this._tripListDays = new TripListDays();
     render(this._boardContainer, this._tripListDays, RenderPosition.BEFOREEND);
-
     this._createNewDay();
   }
 

@@ -4,4 +4,24 @@ export const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
+export const toFirstLetterUp = (item) => {
+  item = item[0].toUpperCase() + item.slice(1);
+  return item;
+}
+
 export const getRandomBoolean = () => Boolean(getRandomInteger(0, 1));
+
+export const updateItem = (items, update) => {
+  const index = items.findIndex((item) => item.id === update.id);
+
+  if (index === -1) {
+    return items;
+  }
+
+  return [
+    ...items.slice(0, index),
+    update,
+    ...items.slice(index + 1)
+  ];
+};
+

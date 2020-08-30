@@ -1,27 +1,22 @@
 import {waypoints, cities} from '../const.js';
-import {generateTrip} from '../mock/trip.js';
 import AbstractView from "./abstract.js";
-
-
-const trip = generateTrip();
-const {start, finish, destination} = trip;
-
+import {toFirstLetterUp} from '../utils/common.js';
 
 const toTransport = waypoints.filter((way) => way.action === `to`);
 const inTransport = waypoints.filter((way) => way.action === `in`);
 
-const humansDateStart = () => {
-  return start.toLocaleString(`en-GB`, {day: `numeric`, month: `numeric`, year: `2-digit`, hour: `numeric`, minute: `2-digit`});
+const humansDateStart = (trip) => {
+  return trip.start.toLocaleString(`en-GB`, {day: `numeric`, month: `numeric`, year: `2-digit`, hour: `numeric`, minute: `2-digit`});
 };
-const humansDateFinish = () => {
-  return finish.toLocaleString(`en-GB`, {day: `numeric`, month: `numeric`, year: `2-digit`, hour: `numeric`, minute: `2-digit`});
+const humansDateFinish = (trip) => {
+  return trip.finish.toLocaleString(`en-GB`, {day: `numeric`, month: `numeric`, year: `2-digit`, hour: `numeric`, minute: `2-digit`});
 };
 
 const generateToTransport = () => {
   return toTransport.map((way) =>
     `<div class="event__type-item">
     <input id="event-type-${way.name}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${way.name}">
-    <label class="event__type-label  event__type-label--${way.name}" for="event-type-${way.name}-1">${way.name[0].toUpperCase()}${way.name.slice(1)}</label>
+    <label class="event__type-label  event__type-label--${way.name}" for="event-type-${way.name}-1">${toFirstLetterUp(way.name)}</label>
   </div>`
   ).join(``);
 };
@@ -30,7 +25,7 @@ const generateInTransport = () => {
   return inTransport.map((way) =>
     `<div class="event__type-item">
     <input id="event-type-${way.name}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${way.name}">
-    <label class="event__type-label  event__type-label--${way.name}" for="event-type-${way.name}-1">${way.name[0].toUpperCase() + way.name.slice(1)}</label>
+    <label class="event__type-label  event__type-label--${way.name}" for="event-type-${way.name}-1">${toFirstLetterUp(way.name)}</label>
   </div>`
   ).join(``);
 };
@@ -45,13 +40,13 @@ const createPictureDestination = () => {
   return trips;
 };
 
-const createAddTripEvent = () => {
+const createAddTripEvent = (trip) => {
   return `<form class="trip-events__item  event  event--edit" action="#" method="post">
             <header class="event__header">
               <div class="event__type-wrapper">
                 <label class="event__type  event__type-btn" for="event-type-toggle-1">
                   <span class="visually-hidden">Choose event type</span>
-                  <img class="event__type-icon" width="17" height="17" src="img/icons/flight.png" alt="Event type icon">
+                  <img class="event__type-icon" width="17" height="17" src="${trip.transport.picture}" alt="Event type icon">
                 </label>
                 <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -70,7 +65,7 @@ const createAddTripEvent = () => {
 
               <div class="event__field-group  event__field-group--destination">
                 <label class="event__label  event__type-output" for="event-destination-1">
-                  Flight to
+                  ${toFirstLetterUp(trip.transport.name)} ${trip.transport.action}
                 </label>
                 <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="" list="destination-list-1">
                 <datalist id="destination-list-1">
@@ -82,12 +77,12 @@ const createAddTripEvent = () => {
                 <label class="visually-hidden" for="event-start-time-1">
                   From
                 </label>
-                <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${humansDateStart()}">
+                <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${humansDateStart(trip)}">
                 &mdash;
                 <label class="visually-hidden" for="event-end-time-1">
                   To
                 </label>
-                <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${humansDateFinish()}">
+                <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${humansDateFinish(trip)}">
               </div>
 
               <div class="event__field-group  event__field-group--price">
@@ -154,7 +149,7 @@ const createAddTripEvent = () => {
               </section>
               <section class="event__section  event__section--destination">
               <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-              <p class="event__destination-description">${destination.information}</p>
+              <p class="event__destination-description">${trip.destination.information}</p>
 
               <div class="event__photos-container">
                 <div class="event__photos-tape">
@@ -167,7 +162,7 @@ const createAddTripEvent = () => {
 };
 
 export default class AddTripEvent extends AbstractView {
-  constructor() {
+  constructor(trip) {
     super();
     this._trip = trip;
     this._submitFormEvent = this._submitFormEvent.bind(this);
@@ -179,7 +174,7 @@ export default class AddTripEvent extends AbstractView {
 
   _submitFormEvent(evt) {
     evt.preventDefault();
-    this._callback.submitForm();
+    this._callback.submitForm(this._trip);
   }
 
   setSubmitFormEvent(callback) {

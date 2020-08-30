@@ -1,4 +1,5 @@
 import AbstractView from "./abstract.js";
+import {toFirstLetterUp} from '../utils/common.js';
 
 export const createTripEvent = (trip) => {
   const {transport, city, start, finish, price, offers, duration} = trip;
@@ -40,7 +41,7 @@ export const createTripEvent = (trip) => {
           <div class="event__type">
             <img class="event__type-icon" width="42" height="42" src=${transport.picture} alt="Event type icon">
           </div>
-          <h3 class="event__title">${transport.name} ${transport.action} ${city}</h3>
+          <h3 class="event__title">${toFirstLetterUp(trip.transport.name)} ${transport.action} ${city}</h3>
 
           <div class="event__schedule">
             <p class="event__time">
