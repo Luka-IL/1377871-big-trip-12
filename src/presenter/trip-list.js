@@ -23,6 +23,8 @@ export default class TripList {
 
     this._handleEventChange = this._handleEventChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+    this._handleModeChange = this._handleModeChange.bind(this);
+
   }
 
   init() {
@@ -39,6 +41,12 @@ export default class TripList {
   _handleEventChange(updateEvent) {
     this._trips = updateItem(this._trips, updateEvent);
     this._eventPresenter[updateEvent.id].init(updateEvent);
+  }
+
+  _handleModeChange() {
+    Object
+      .values(this._eventPresenter)
+      .forEach((presenter) => presenter.resetView());
   }
 
   _sortTrips(sortType) {
@@ -100,7 +108,7 @@ export default class TripList {
   }
 
   _renderTripEvent(tripListElement, trip) {
-    const tripEvent = new Trip(tripListElement, this._handleEventChange);
+    const tripEvent = new Trip(tripListElement, this._handleEventChange, this._handleModeChange);
     tripEvent.init(trip);
     this._eventPresenter[trip.id] = tripEvent;
 

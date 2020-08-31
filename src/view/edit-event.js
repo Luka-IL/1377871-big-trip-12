@@ -1,7 +1,7 @@
-import AbstractView from './abstract.js';
+import SmartView from "./smart.js";
 import {waypoints, cities} from '../const.js';
 import {toFirstLetterUp} from '../utils/common.js';
-import { replace } from '../utils/render.js';
+import TripEvent from "./trip-event.js";
 
 const toTransport = waypoints.filter((way) => way.action === `to`);
 const inTransport = waypoints.filter((way) => way.action === `in`);
@@ -168,21 +168,29 @@ const createEditTripEvent = (data) => {
                   </form>`;
 };
 
-export default class EditTripEvent extends AbstractView {
+export default class EditTripEvent extends SmartView {
   constructor(trip) {
     super();
-    this._data = EditTripEvent.parseTaskToData(trip);
-    this._submitFormEditEvent = this._submitFormEditEvent.bind(this);
+    this._data = EditTripEvent.parseTripToData(trip);
+    this._handleSubmitFormEditEvent = this._handleSubmitFormEditEvent.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+    this._priceInputHandler = this._priceInputHandler.bind(this);
+    this._startTimeHandler = this._startTimeHandler.bind(this);
+    this._finishTimeHandler = this._finishTimeHandler.bind(this);
+    this._tripDestinationHandler = this._tripDestinationHandler.bind(this);
+
+
+    this._setInnerHandlers();
+
   }
 
   getTemplate() {
     return createEditTripEvent(this._data);
   }
 
-  _submitFormEditEvent(evt) {
+  _handleSubmitFormEditEvent(evt) {
     evt.preventDefault();
-    this._callback.submitForm(EditTripEvent.parseDataToTask(this._data));
+    this._callback.submitForm(EditTripEvent.parseDataToTrip(this._data));
   }
 
   _favoriteClickHandler(evt) {
@@ -197,20 +205,63 @@ export default class EditTripEvent extends AbstractView {
 
   setSubmitFormEditEvent(callback) {
     this._callback.submitForm = callback;
-    this.getElement().addEventListener(`submit`, this._submitFormEvent);
+    this.getElement().addEventListener(`submit`, this._handleSubmitFormEditEvent);
   }
 
-  updateElement() {
-    let prevElement = this.getElement();
-    const parent = prevElement.parentElement;
-    this.removeElement();
-
-    const newElement = this.getElement();
-    parent.replaceChild(newElement, prevElement);
-    prevElement = null;
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setSubmitFormEditEvent(this._callback.submitForm);
   }
 
-  static parseTaskToData(trip) {
+  _setInnerHandlers() {
+    this.getElement()
+    .querySelector(`.event__input--price`)
+    .addEventListener(`input`, this._priceInputHandler);
+
+    this.getElement()
+    .querySelector(`#event-start-time-1`)
+    .addEventListener(`input`, this._startTimeHandler);
+
+    this.getElement()
+    .querySelector(`#event-end-time-1`)
+    .addEventListener(`input`, this._finishTimeHandler);
+
+    this.getElement()
+    .querySelector(`.event__input--destination`)
+    .addEventListener(`input`, this._tripDestinationHandler);
+  }
+
+  _priceInputHandler(evt) {
+    this.updateData({
+      price: evt.target.value
+    }, true);
+  }
+
+  _startTimeHandler(evt) {
+    this.updateData({
+      start: evt.target.value
+    }, true);
+  }
+
+  _tripDestinationHandler(evt) {
+    this.updateData({
+      city: evt.target.value
+    }, true);
+  }
+
+  _finishTimeHandler(evt) {
+    this.updateData({
+      finish: evt.target.value
+    }, true);
+  }
+
+  reset(trip) {
+    this.updateData(
+        EditTripEvent.parseTripToData(trip)
+    );
+  }
+
+  static parseTripToData(trip) {
     return Object.assign(
         {},
         trip,
@@ -220,7 +271,7 @@ export default class EditTripEvent extends AbstractView {
     );
   }
 
-  static parseDataToTask(data) {
+  static parseDataToTrip(data) {
     data = Object.assign({}, data);
 
     if (!data.isFavoriteFlag) {
