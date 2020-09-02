@@ -1,16 +1,20 @@
+import moment from "moment";
+
 import SmartView from "./smart.js";
 import {waypoints, cities} from '../const.js';
 import {toFirstLetterUp} from '../utils/common.js';
-import TripEvent from "./trip-event.js";
+import flatpickr from "flatpickr";
+
+import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
 const toTransport = waypoints.filter((way) => way.action === `to`);
 const inTransport = waypoints.filter((way) => way.action === `in`);
 
 const humansDateStart = (trip) => {
-  return trip.start.toLocaleString(`en-GB`, {day: `numeric`, month: `numeric`, year: `2-digit`, hour: `numeric`, minute: `2-digit`});
+  return moment(trip.start).format('L');
 };
 const humansDateFinish = (trip) => {
-  return trip.finish.toLocaleString(`en-GB`, {day: `numeric`, month: `numeric`, year: `2-digit`, hour: `numeric`, minute: `2-digit`});
+  return moment(trip.finish).format(`LT`);
 };
 
 
@@ -171,17 +175,46 @@ const createEditTripEvent = (data) => {
 export default class EditTripEvent extends SmartView {
   constructor(trip) {
     super();
+    this._datepickerStart = null;
+    this._datepickerStart = null;
     this._data = EditTripEvent.parseTripToData(trip);
+
     this._handleSubmitFormEditEvent = this._handleSubmitFormEditEvent.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._priceInputHandler = this._priceInputHandler.bind(this);
-    this._startTimeHandler = this._startTimeHandler.bind(this);
-    this._finishTimeHandler = this._finishTimeHandler.bind(this);
+    this._startChangeHandler = this._startChangeHandler.bind(this);
+    this._finishChangeHandler = this._finishChangeHandler.bind(this);
     this._tripDestinationHandler = this._tripDestinationHandler.bind(this);
 
 
     this._setInnerHandlers();
+    this._setDatepicker();
+  }
 
+  _setDatepicker() {
+    if (this._datepicker) {
+      this._datepickerStart.destroy();
+      this._datepickerFinish.destroy();
+      this._datepickerStart = null;
+      this._datepickerFinish = null;
+    }
+
+    this._datepickerStart = flatpickr(
+        this.getElement().querySelector(`#event-start-time-1`),
+        {
+          enableTime: true,
+          dateFormat: `Y-m-d H:i`,
+          onChange: this._startChangeHandler
+        }
+    );
+    this._datepickerFinish = flatpickr(
+        this.getElement().querySelector(`#event-end-time-1`),
+        {
+          enableTime: true,
+          dateFormat: `Y-m-d H:i`,
+          onChange: this._finishChangeHandler
+        }
+    );
   }
 
   getTemplate() {
@@ -210,6 +243,7 @@ export default class EditTripEvent extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandlers();
+    this._setDatepicker();
     this.setSubmitFormEditEvent(this._callback.submitForm);
   }
 
@@ -219,16 +253,20 @@ export default class EditTripEvent extends SmartView {
     .addEventListener(`input`, this._priceInputHandler);
 
     this.getElement()
-    .querySelector(`#event-start-time-1`)
-    .addEventListener(`input`, this._startTimeHandler);
-
-    this.getElement()
-    .querySelector(`#event-end-time-1`)
-    .addEventListener(`input`, this._finishTimeHandler);
-
-    this.getElement()
     .querySelector(`.event__input--destination`)
     .addEventListener(`input`, this._tripDestinationHandler);
+  }
+
+  _startChangeHandler([userDate]) {
+    this.updateData({
+      start: userDate
+    });
+  }
+
+  _finishChangeHandler([userDate]) {
+    this.updateData({
+      finish: userDate
+    });
   }
 
   _priceInputHandler(evt) {
@@ -237,21 +275,9 @@ export default class EditTripEvent extends SmartView {
     }, true);
   }
 
-  _startTimeHandler(evt) {
-    this.updateData({
-      start: evt.target.value
-    }, true);
-  }
-
   _tripDestinationHandler(evt) {
     this.updateData({
       city: evt.target.value
-    }, true);
-  }
-
-  _finishTimeHandler(evt) {
-    this.updateData({
-      finish: evt.target.value
     }, true);
   }
 
