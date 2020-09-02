@@ -7,6 +7,8 @@ const waypoint = () => {
   return transportTrip;
 };
 
+const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
 const cityName = () => {
   const randomIndex = getRandomInteger(0, cities.length - 1);
   const city = cities[randomIndex];
@@ -58,6 +60,7 @@ const finishDate = (startTrip) => {
 
 
 export const generateTrip = () => {
+  const id = generateId();
   const transport = waypoint();
   const city = cityName();
   const start = startDate(finishDateNow);
@@ -66,6 +69,7 @@ export const generateTrip = () => {
   const duration = Math.round((finish - start) / 60000);
   const offers = getRandomOffers();
   return {
+    id,
     transport,
     city,
     offers,
@@ -76,7 +80,8 @@ export const generateTrip = () => {
     price,
     start,
     finish,
-    duration
+    duration,
+    isFavorite: true
   };
 };
 
