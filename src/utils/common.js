@@ -7,7 +7,7 @@ export const getRandomInteger = (a = 0, b = 1) => {
 export const toFirstLetterUp = (item) => {
   item = item[0].toUpperCase() + item.slice(1);
   return item;
-}
+};
 
 export const getRandomBoolean = () => Boolean(getRandomInteger(0, 1));
 
