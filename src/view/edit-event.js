@@ -11,7 +11,7 @@ const toTransport = waypoints.filter((way) => way.action === `to`);
 const inTransport = waypoints.filter((way) => way.action === `in`);
 
 const humansDateStart = (trip) => {
-  return moment(trip.start).format('LT');
+  return moment(trip.start).format(`LT`);
 };
 const humansDateFinish = (trip) => {
   return moment(trip.finish).format(`LT`);

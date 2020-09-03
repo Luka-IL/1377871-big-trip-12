@@ -231,6 +231,10 @@ main {
     opacity: 1;
     cursor: default; }
 
+.list__filter--active {
+  font-weight: bold;
+}
+
 .trip-filters {
   display: -ms-flexbox;
   display: flex;

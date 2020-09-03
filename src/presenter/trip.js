@@ -1,6 +1,8 @@
 import TripEvent from '../view/trip-event.js';
 import EditTripEvent from '../view/edit-event.js';
 import {RenderPosition, replace, render, remove} from "../utils/render.js";
+import {UserAction, UpdateType} from "../const.js";
+
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -77,7 +79,11 @@ export default class Trip {
   }
 
   _handleSubmitFormEditEvent(trip) {
-    this._changeData(trip);
+    this._changeData(
+        UserAction.UPDATE_TRIP,
+        UpdateType.MINOR,
+        trip
+    );
     this._replaceFormToCard();
   }
 
@@ -97,6 +103,8 @@ export default class Trip {
 
   _handleFavoriteClick() {
     this._changeData(
+        UserAction.UPDATE_TRIP,
+        UpdateType.MINOR,
         Object.assign(
             {},
             this._trip,
