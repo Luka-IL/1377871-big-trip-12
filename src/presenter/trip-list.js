@@ -4,19 +4,24 @@ import TripEventsList from '../view/trip-events-list.js';
 import WithoutTripEvent from '../view/without-trip.js';
 import SortTripEvent from '../view/sort-events.js';
 import Trip from './trip.js';
-import {trips, TRIP_COUNT} from '../mock/array-trips.js';
+import TripNewPresenter from "./trip-new.js";
+import {TRIP_COUNT} from '../mock/array-trips.js';
+import {filter} from "../utils/filter.js";
 import {sortPrice, sortEvent, sortTime} from "../utils/trip.js";
 import {RenderPosition, render, remove} from "../utils/render.js";
-import {SortType, UpdateType, UserAction} from "../const.js";
+import {SortType, UpdateType, UserAction, FilterType} from "../const.js";
 
 export default class TripList {
-  constructor(boardContainer, tripsModel) {
+  constructor(boardContainer, tripsModel, filterModel) {
     this._boardContainer = boardContainer;
     this._tripsModel = tripsModel;
+    this._filterModel = filterModel;
 
     this._sortComponent = null;
     this._tripListDays = null;
+    this._tripNewPresenter = null;
     this._withoutTripEvent = new WithoutTripEvent();
+    this._dayCounter = 1;
     this._numberTrip = 0;
     this._currentSortType = `time`;
     this._eventPresenter = {};
@@ -27,6 +32,7 @@ export default class TripList {
     this._handleModelEvent = this._handleModelEvent.bind(this);
 
     this._tripsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
 
   }
 
@@ -34,16 +40,26 @@ export default class TripList {
     this._renderBoard();
   }
 
+  createTrip() {
+    this._currentSortType = SortType.DEFAULT;
+    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.ALL);
+    this._tripNewPresenter.init();
+  }
+
   _getTrips() {
+    const filterType = this._filterModel.getFilter();
+    const trips = this._tripsModel.getTrips();
+    const filtredTrips = filter[filterType](trips);
+
     switch (this._currentSortType) {
       case SortType.TIME:
-        return this._tripsModel.getTrips().slice().sort(sortTime);
+        return filtredTrips.sort(sortTime);
       case SortType.EVENT:
-        return this._tripsModel.getTrips().slice().sort(sortEvent);
+        return filtredTrips.sort(sortEvent);
       case SortType.PRICE:
-        return this._tripsModel.getTrips().slice().sort(sortPrice);
+        return filtredTrips.sort(sortPrice);
     }
-    return this._tripsModel.getTrips();
+    return filtredTrips;
   }
 
   _handleViewAction(actionType, updateType, update) {
@@ -70,13 +86,15 @@ export default class TripList {
         this._renderBoard();
         break;
       case UpdateType.MAJOR:
-        this._clearB();
+        this._clearBoard();
         this._renderBoard({resetSortType: true});
         break;
     }
   }
 
   _handleModeChange() {
+    this._tripNewPresenter.destroy();
+
     Object
       .values(this._eventPresenter)
       .forEach((presenter) => presenter.resetView());
@@ -90,7 +108,6 @@ export default class TripList {
     render(this._boardContainer, this._tripListDays, RenderPosition.BEFOREEND);
     render(this._tripListDays, this._tripDaySort, RenderPosition.BEFOREEND);
     render(this._tripDaySort, this._tripEventsList, RenderPosition.BEFOREEND);
-
     for (let i = 0; i < this._getTrips().length; i++) {
       this._renderTripEvent(this._tripEventsList, this._getTrips()[i]);
     }
@@ -128,9 +145,11 @@ export default class TripList {
   }
 
   _renderBoard() {
+
     this._renderSort();
     if (TRIP_COUNT > 0) {
       this._createNewListDay();
+
     } else {
       render(this._boardContainer, new WithoutTripEvent(), RenderPosition.BEFOREEND);
     }
@@ -138,12 +157,16 @@ export default class TripList {
 
   _createNewListDay() {
     this._tripListDays = new TripListDays();
+    this._tripNewPresenter = new TripNewPresenter(this._tripListDays, this._handleViewAction);
+
     render(this._boardContainer, this._tripListDays, RenderPosition.BEFOREEND);
     this._createNewDay();
   }
 
   _createNewDay() {
-    const EventsDay = new TripDay(this._getTrips()[this._numberTrip]).getElement();
+    const EventsDay = new TripDay(this._getTrips()[this._numberTrip], this._dayCounter).getElement();
+    this._dayCounter++;
+
     this._tripEventsList = new TripEventsList();
 
 
@@ -155,7 +178,7 @@ export default class TripList {
 
   _createNewTrips() {
     let dataTripNow = this._getTrips()[this._numberTrip].start.getDate();
-    for (this._numberTrip; this._numberTrip < TRIP_COUNT; this._numberTrip++) {
+    for (this._numberTrip; this._numberTrip < this._getTrips().length; this._numberTrip++) {
       if (dataTripNow === this._getTrips()[this._numberTrip].start.getDate()) {
         this._renderTripEvent(this._tripEventsList, this._getTrips()[this._numberTrip]);
       } else if (this._getTrips().length > this._numberTrip) {
@@ -168,6 +191,8 @@ export default class TripList {
   }
 
   _clearBoard({resetSortType = false} = {}) {
+    this._tripNewPresenter.destroy();
+
     Object
       .values(this._eventPresenter)
       .forEach((presenter) => presenter.destroy());
@@ -177,6 +202,7 @@ export default class TripList {
     remove(this._sortComponent);
     remove(this._withoutTripEvent);
     this._numberTrip = 0;
+    this._dayCounter = 1;
 
     if (resetSortType) {
       this._currentSortType = SortType.DEFAULT;
