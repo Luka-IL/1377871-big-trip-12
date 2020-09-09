@@ -29,6 +29,7 @@ const pageMain = document.querySelector(`.page-main`);
 const tripEvents = pageMain.querySelector(`.trip-events`);
 
 const allTrip = new TripList(tripEvents, tripsModel, filterModel);
+
 allTrip.init();
 
 document.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, (evt) => {
