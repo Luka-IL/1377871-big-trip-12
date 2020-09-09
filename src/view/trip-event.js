@@ -1,15 +1,19 @@
-import AbstractView from "./abstract.js";
+import he from 'he';
+import AbstractView from './abstract.js';
 import {toFirstLetterUp} from '../utils/common.js';
 
 export const createTripEvent = (trip) => {
   const {transport, city, start, finish, price, offers, duration} = trip;
 
   const generateOffers = (offer) => {
+    if (offer === null) {
+      return ``;
+    }
     const newOffers = offer.map(([, object]) =>
-      `<li class="event__offer">
-              <span class="event__offer-title">${object.name}</span>
+      `<li class='event__offer'>
+              <span class='event__offer-title'>${object.name}</span>
               &plus;
-              &euro;&nbsp;<span class="event__offer-price">${object.price}</span>
+              &euro;&nbsp;<span class='event__offer-price'>${object.price}</span>
            </li>`
     ).join(``);
     return newOffers;
@@ -36,33 +40,33 @@ export const createTripEvent = (trip) => {
   };
 
   return (
-    `<li class="trip-events__item">
-        <div class="event">
-          <div class="event__type">
-            <img class="event__type-icon" width="42" height="42" src=${transport.picture} alt="Event type icon">
+    `<li class='trip-events__item'>
+        <div class='event'>
+          <div class='event__type'>
+            <img class='event__type-icon' width='42' height='42' src=${transport.picture} alt='Event type icon'>
           </div>
-          <h3 class="event__title">${toFirstLetterUp(trip.transport.name)} ${transport.action} ${city}</h3>
+          <h3 class='event__title'>${toFirstLetterUp(trip.transport.name)} ${transport.action} ${he.encode(city)}</h3>
 
-          <div class="event__schedule">
-            <p class="event__time">
-              <time class="event__start-time" datetime="${start}">${start.getHours()}:${pointZero(start)}${start.getMinutes()}</time>
+          <div class='event__schedule'>
+            <p class='event__time'>
+              <time class='event__start-time' datetime='${start}'>${start.getHours()}:${pointZero(start)}${start.getMinutes()}</time>
               &mdash;
-              <time class="event__end-time" datetime="${finish}">${finish.getHours()}:${pointZero(finish)}${finish.getMinutes()}</time>
+              <time class='event__end-time' datetime='${finish}'>${finish.getHours()}:${pointZero(finish)}${finish.getMinutes()}</time>
             </p>
-            <p class="event__duration">${normalDuration()}</p>
+            <p class='event__duration'>${normalDuration()}</p>
           </div>
 
-          <p class="event__price">
-            &euro;&nbsp;<span class="event__price-value">${price}</span>
+          <p class='event__price'>
+            &euro;&nbsp;<span class='event__price-value'>${price}</span>
           </p>
 
-          <h4 class="visually-hidden">Offers:</h4>
-          <ul class="event__selected-offers">
+          <h4 class='visually-hidden'>Offers:</h4>
+          <ul class='event__selected-offers'>
             ${generateOffers(offers)}
           </ul>
 
-          <button class="event__rollup-btn" type="button">
-            <span class="visually-hidden">Open event</span>
+          <button class='event__rollup-btn' type='button'>
+            <span class='visually-hidden'>Open event</span>
           </button>
         </div>
       </li>`

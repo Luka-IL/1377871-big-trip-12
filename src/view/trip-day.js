@@ -1,14 +1,10 @@
 import AbstractView from "./abstract.js";
 
-let dayCounter = 0;
-
-const createTripDay = (trip) => {
+const createTripDay = (trip, dayCounter) => {
   const startMonth = (trip !== undefined) ? trip.start.toLocaleString(`en-US`, {month: `long`}) : ``;
   const startDay = (trip !== undefined) ? trip.start.getDate() : ``;
   const tripStart = (trip !== undefined) ? trip.start : ``;
-  if (trip !== undefined) {
-    dayCounter++;
-  } else {
+  if (trip === undefined) {
     dayCounter = ``;
   }
 
@@ -23,12 +19,13 @@ const createTripDay = (trip) => {
 };
 
 export default class TripDay extends AbstractView {
-  constructor(trip) {
+  constructor(trip, dayCounter) {
     super();
     this._trip = trip;
+    this._dayCounter = dayCounter;
   }
 
   getTemplate() {
-    return createTripDay(this._trip);
+    return createTripDay(this._trip, this._dayCounter);
   }
 }

@@ -1,6 +1,8 @@
 import TripEvent from '../view/trip-event.js';
 import EditTripEvent from '../view/edit-event.js';
 import {RenderPosition, replace, render, remove} from "../utils/render.js";
+import {UserAction, UpdateType} from "../const.js";
+
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -18,11 +20,11 @@ export default class Trip {
     this._tripEditComponent = null;
     this._mode = Mode.DEFAULT;
 
-
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
     this._handleClickCardArrow = this._handleClickCardArrow.bind(this);
+    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleSubmitFormEditEvent = this._handleSubmitFormEditEvent.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
-    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
   }
 
   init(trip) {
@@ -37,6 +39,8 @@ export default class Trip {
     this._tripComponent.setClickCardArrow(this._handleClickCardArrow);
     this._tripEditComponent.setSubmitFormEditEvent(this._handleSubmitFormEditEvent);
     this._tripEditComponent.setClickFavoriteStar(this._handleFavoriteClick);
+    this._tripEditComponent.setDeleteClickHandler(this._handleDeleteClick);
+
 
     if (prevTripComponent === null || prevtripAddComponent === null) {
       render(this._tripListElement, this._tripComponent, RenderPosition.BEFOREEND);
@@ -77,8 +81,20 @@ export default class Trip {
   }
 
   _handleSubmitFormEditEvent(trip) {
-    this._changeData(trip);
+    this._changeData(
+        UserAction.UPDATE_TRIP,
+        UpdateType.MINOR,
+        trip
+    );
     this._replaceFormToCard();
+  }
+
+  _handleDeleteClick(trip) {
+    this._changeData(
+        UserAction.DELETE_TRIP,
+        UpdateType.MINOR,
+        trip
+    );
   }
 
   _replaceCardToForm() {
@@ -97,6 +113,8 @@ export default class Trip {
 
   _handleFavoriteClick() {
     this._changeData(
+        UserAction.UPDATE_TRIP,
+        UpdateType.MINOR,
         Object.assign(
             {},
             this._trip,

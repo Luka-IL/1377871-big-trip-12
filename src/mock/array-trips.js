@@ -11,3 +11,4 @@ export const trips = new Array(TRIP_COUNT).fill().map(generateTrip).sort((a, b) 
   }
   return 0;
 });
+

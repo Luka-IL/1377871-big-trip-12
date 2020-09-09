@@ -7,7 +7,7 @@ const waypoint = () => {
   return transportTrip;
 };
 
-const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
 
 const cityName = () => {
   const randomIndex = getRandomInteger(0, cities.length - 1);
@@ -41,8 +41,7 @@ const getRandomOffers = () => {
   return offersOneTrip;
 };
 
-
-let finishDateNow = new Date(20, 8, 12);
+let finishDateNow = new Date(2020, 8, 12);
 const startDate = (finishTime) => {
   let finishHours = finishTime.getHours();
   let finishMinutes = finishTime.getMinutes();
@@ -81,7 +80,7 @@ export const generateTrip = () => {
     start,
     finish,
     duration,
-    isFavorite: true
+    isFavorite: false
   };
 };
 
