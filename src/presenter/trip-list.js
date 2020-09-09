@@ -9,7 +9,7 @@ import {TRIP_COUNT} from '../mock/array-trips.js';
 import {filter} from "../utils/filter.js";
 import {sortPrice, sortEvent, sortTime} from "../utils/trip.js";
 import {RenderPosition, render, remove} from "../utils/render.js";
-import {SortType, UpdateType, UserAction, FilterType} from "../const.js";
+import {SortType, UpdateType, UserAction} from "../const.js";
 
 export default class TripList {
   constructor(boardContainer, tripsModel, filterModel) {
@@ -31,19 +31,23 @@ export default class TripList {
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
 
-    this._tripsModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
-
   }
 
   init() {
     this._renderBoard();
+    this._tripsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
   }
 
-  createTrip() {
-    this._currentSortType = SortType.DEFAULT;
-    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.ALL);
-    this._tripNewPresenter.init();
+  createTrip(callback) {
+    this._tripNewPresenter.init(callback);
+  }
+
+  destroy() {
+    this._clearBoard({resetSortType: true});
+
+    this._tripsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
   }
 
   _getTrips() {

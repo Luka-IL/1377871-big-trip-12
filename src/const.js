@@ -120,3 +120,9 @@ export const FilterType = {
   FUTURE: `future`,
   PAST: `past`,
 };
+
+export const MenuItem = {
+  ADD_TRIP_EVENT: `ADD_TRIP_EVENT`,
+  STATS: `STATS`,
+  TABLE: `TABLE`
+};

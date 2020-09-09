@@ -1,11 +1,10 @@
 import moment from 'moment';
-import he from 'he';
 
 import SmartView from './smart.js';
 import {waypoints, cities} from '../const.js';
 import {toFirstLetterUp} from '../utils/common.js';
 import flatpickr from 'flatpickr';
-import {generateTrip} from '../mock/trip.js'
+import {generateTrip} from '../mock/trip.js';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
@@ -71,7 +70,7 @@ const createEditTripEvent = (data) => {
                         </label>
                         <input class='event__input  event__input--destination' id='event-destination-1' type='text' name='event-destination' value='${city}' list='destination-list-1'>
                         <datalist id='destination-list-1'>
-                          ${he.encode(generateCities())}
+                          ${generateCities()}
                         </datalist>
                       </div>
 
