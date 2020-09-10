@@ -1,7 +1,7 @@
 import moment from 'moment';
 
 import SmartView from './smart.js';
-import {waypoints, cities} from '../const.js';
+import {waypoints, cities, offersTrip} from '../const.js';
 import {toFirstLetterUp} from '../utils/common.js';
 import flatpickr from 'flatpickr';
 
@@ -47,6 +47,18 @@ const createPictureDestination = (destination) => {
   return trips;
 };
 
+const createOffersTransport = (transport) => {
+  const typeTransport = offersTrip.filter((item) => item.type === transport)[0];
+  return typeTransport.offers.map((item) => `<div class='event__offer-selector'>
+  <input class='event__offer-checkbox  visually-hidden' id='event-offer-${item.title}-1' type='checkbox' name='event-offer-train'>
+  <label class='event__offer-label' for='event-offer-train-1'>
+    <span class='event__offer-title'>${item.title}</span>
+    &plus;
+    &euro;&nbsp;<span class='event__offer-price'>${item.price}</span>
+  </label>
+</div>`).join(``);
+};
+
 const generateActionTransport = (action) => {
   return action.map((way) =>
     `<div class='event__type-item'>
@@ -57,7 +69,7 @@ const generateActionTransport = (action) => {
 };
 
 const createEditTripEvent = (data) => {
-  const {transport, logo, city, information, price, isFavoriteFlag, destination} = data;
+  const {transport, logo, city, price, isFavoriteFlag, destination} = data;
   return `<form class='event  event--edit' action='#' method='post'>
                     <header class='event__header'>
                       <div class='event__type-wrapper'>
@@ -131,55 +143,12 @@ const createEditTripEvent = (data) => {
                         <h3 class='event__section-title  event__section-title--offers'>Offers</h3>
 
                         <div class='event__available-offers'>
-                          <div class='event__offer-selector'>
-                            <input class='event__offer-checkbox  visually-hidden' id='event-offer-luggage-1' type='checkbox' name='event-offer-luggage' checked>
-                            <label class='event__offer-label' for='event-offer-luggage-1'>
-                              <span class='event__offer-title'>Add luggage</span>
-                              &plus;
-                              &euro;&nbsp;<span class='event__offer-price'>30</span>
-                            </label>
-                          </div>
-
-                          <div class='event__offer-selector'>
-                            <input class='event__offer-checkbox  visually-hidden' id='event-offer-comfort-1' type='checkbox' name='event-offer-comfort' checked>
-                            <label class='event__offer-label' for='event-offer-comfort-1'>
-                              <span class='event__offer-title'>Switch to comfort class</span>
-                              &plus;
-                              &euro;&nbsp;<span class='event__offer-price'>100</span>
-                            </label>
-                          </div>
-
-                          <div class='event__offer-selector'>
-                            <input class='event__offer-checkbox  visually-hidden' id='event-offer-meal-1' type='checkbox' name='event-offer-meal'>
-                            <label class='event__offer-label' for='event-offer-meal-1'>
-                              <span class='event__offer-title'>Add meal</span>
-                              &plus;
-                              &euro;&nbsp;<span class='event__offer-price'>15</span>
-                            </label>
-                          </div>
-
-                          <div class='event__offer-selector'>
-                            <input class='event__offer-checkbox  visually-hidden' id='event-offer-seats-1' type='checkbox' name='event-offer-seats'>
-                            <label class='event__offer-label' for='event-offer-seats-1'>
-                              <span class='event__offer-title'>Choose seats</span>
-                              &plus;
-                              &euro;&nbsp;<span class='event__offer-price'>5</span>
-                            </label>
-                          </div>
-
-                          <div class='event__offer-selector'>
-                            <input class='event__offer-checkbox  visually-hidden' id='event-offer-train-1' type='checkbox' name='event-offer-train'>
-                            <label class='event__offer-label' for='event-offer-train-1'>
-                              <span class='event__offer-title'>Travel by train</span>
-                              &plus;
-                              &euro;&nbsp;<span class='event__offer-price'>40</span>
-                            </label>
-                          </div>
+                          ${createOffersTransport(transport)}
                         </div>
                       </section>
                       <section class='event__section  event__section--destination'>
                         <h3 class='event__section-title  event__section-title--destination'>Destination</h3>
-                        <p class='event__destination-description'>${information}</p>
+                        <p class='event__destination-description'>${destination.description}</p>
 
                         <div class='event__photos-container'>
                           <div class='event__photos-tape'>
@@ -301,7 +270,7 @@ export default class EditTripEvent extends SmartView {
 
   _priceInputHandler(evt) {
     this.updateData({
-      price: evt.target.value
+      price: Number(evt.target.value)
     }, true);
   }
 

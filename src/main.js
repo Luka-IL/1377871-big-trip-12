@@ -57,7 +57,6 @@ render(tripMain, new TripInfo(), RenderPosition.AFTERBEGIN);
 
 filterPresenter.init();
 allTrip.init();
-
 api.getTrips()
 .then((trips) => {
   tripsModel.setTrips(UpdateType.INIT, trips);

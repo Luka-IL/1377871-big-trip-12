@@ -22,7 +22,16 @@ export default class Api {
     return this._load({url: `points`})
       .then(Api.toJSON)
       .then((trips) => trips.map(TripsModel.adaptToClient));
+  }
 
+  getDestinations() {
+    return this._load({url: `destinations`})
+    .then(Api.toJSON);
+  }
+
+  getOffers() {
+    return this._load({url: `offers`})
+    .then(Api.toJSON);
   }
 
   updateTrip(trip) {

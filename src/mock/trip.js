@@ -1,4 +1,4 @@
-import {waypoints, offersTrip, cities, informations} from '../const.js';
+import {waypoints, cities, informations} from '../const.js';
 import {getRandomInteger} from '../utils';
 
 const waypoint = () => {
@@ -22,22 +22,6 @@ const randomInformation = () => {
     informationTravel += informations[randomIndex];
   }
   return informationTravel;
-};
-
-const getRandomOffers = () => {
-  let offersOneTrip = [];
-  const offersGroupTrip = Object.entries(offersTrip);
-  let indexOffers = -1;
-  let secondIndexOffers = -1;
-  const randomSumOffers = getRandomInteger(1, 3);
-  for (let i = 1; i <= randomSumOffers; i++) {
-    indexOffers = getRandomInteger(0, 4);
-    if (indexOffers !== secondIndexOffers) {
-      offersOneTrip.push(offersGroupTrip[indexOffers]);
-    }
-    secondIndexOffers = indexOffers;
-  }
-  return offersOneTrip;
 };
 
 let finishDateNow = new Date(2020, 8, 12);
@@ -64,11 +48,9 @@ export const generateTrip = () => {
   const finish = finishDate(start);
   const price = getRandomInteger(0, 300);
   const duration = Math.round((finish - start) / 60000);
-  const offers = getRandomOffers();
   return {
     transport,
     city,
-    offers,
     destination: {
       description: randomInformation(),
       pictures: []

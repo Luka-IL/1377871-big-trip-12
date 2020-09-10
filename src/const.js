@@ -1,4 +1,9 @@
-import {getRandomBoolean} from './utils/common.js';
+import Api from './api.js';
+
+const AUTHORIZATION = `Basic xo1w2901k29389a`;
+const END_POINT = `https://12.ecmascript.pages.academy/big-trip`;
+
+const api = new Api(END_POINT, AUTHORIZATION);
 
 const taxi = {
   name: `taxi`,
@@ -50,83 +55,13 @@ const restaurant = {
   action: `in`,
   picture: `../img/icons/restaurant.png`
 };
-export const transportType = {
-  taxi: {
-    action: `to`,
-    picture: `./img/icons/taxi.png`
-  },
-  bus: {
-    action: `to`,
-    picture: `../img/icons/bus.png`
-  },
-  train: {
-    action: `to`,
-    picture: `../img/icons/train.png`
-  },
-  ship: {
-    action: `to`,
-    picture: `../img/icons/ship.png`
-  },
-  transport: {
-    action: `to`,
-    picture: `../img/icons/transport.png`
-  },
-  drive: {
-    action: `to`,
-    picture: `../img/icons/drive.png`
-  },
-  fly: {
-    action: `to`,
-    picture: `../img/icons/flight.png`
-  },
-  checkin: {
-    action: `in`,
-    picture: `../img/icons/check-in.png`
-  },
-  sightseeing: {
-    action: `in`,
-    picture: `../img/icons/sightseeing.png`
-  },
-  restaurant: {
-    action: `in`,
-    picture: `../img/icons/restaurant.png`
-  }
-};
 
 export const waypoints = [taxi, bus, train, ship, transport, drive, fly, check, sightseeing, restaurant];
 
-export const offersTrip = {
-  luggage: {
-    active: getRandomBoolean(),
-    type: `offers`,
-    name: `Add luggage`,
-    price: 30
-  },
-  comfort: {
-    active: getRandomBoolean(),
-    type: `offers`,
-    name: `Switch to comfort class`,
-    price: 100
-  },
-  meal: {
-    active: getRandomBoolean(),
-    type: `offers`,
-    name: `Add meal`,
-    price: 15
-  },
-  seats: {
-    active: getRandomBoolean(),
-    type: `offers`,
-    name: `Choose seats`,
-    price: 5
-  },
-  train: {
-    active: getRandomBoolean(),
-    type: `offers`,
-    name: `Travel by train`,
-    price: 40
-  },
-};
+export let offersTrip = [];
+api.getOffers().then((trips) => {
+  trips.forEach((item) => offersTrip.push(item));
+});
 
 export const cities = [`Amsterdam`, `Moscow`, `New - York`, `Istambul`, `Dubai`, `Singapore`];
 
