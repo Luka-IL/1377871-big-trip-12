@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import TripListDays from '../view/list-days.js';
 import TripDay from '../view/trip-day.js';
 import TripEventsList from '../view/trip-events-list.js';
@@ -5,18 +6,20 @@ import WithoutTripEvent from '../view/without-trip.js';
 import SortTripEvent from '../view/sort-events.js';
 import Trip from './trip.js';
 import TripNewPresenter from "./trip-new.js";
-import {TRIP_COUNT} from '../mock/array-trips.js';
+import LoadingView from "../view/loading.js";
 import {filter} from "../utils/filter.js";
 import {sortPrice, sortEvent, sortTime} from "../utils/trip.js";
 import {RenderPosition, render, remove} from "../utils/render.js";
 import {SortType, UpdateType, UserAction} from "../const.js";
 
 export default class TripList {
-  constructor(boardContainer, tripsModel, filterModel) {
+  constructor(boardContainer, tripsModel, filterModel, api) {
     this._boardContainer = boardContainer;
     this._tripsModel = tripsModel;
     this._filterModel = filterModel;
+    this._api = api;
 
+    this._isLoading = true;
     this._sortComponent = null;
     this._tripListDays = null;
     this._tripNewPresenter = null;
@@ -30,6 +33,7 @@ export default class TripList {
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
+    this._loadingComponent = new LoadingView();
 
   }
 
@@ -69,13 +73,19 @@ export default class TripList {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_TRIP:
-        this._tripsModel.updateTrip(updateType, update);
+        this._api.updateTrip(update).then((response) => {
+          this._tripsModel.updateTrip(updateType, response);
+        });
         break;
       case UserAction.ADD_TRIP:
-        this._tripsModel.addTrip(updateType, update);
+        this._api.addTrip(update).then((response) => {
+          this._tripsModel.addTrip(updateType, response);
+        });
         break;
       case UserAction.DELETE_TRIP:
-        this._tripsModel.deleteTrip(updateType, update);
+        this._api.deleteTrip(update).then(() => {
+          this._tripsModel.deleteTrip(updateType, update);
+        });
         break;
     }
   }
@@ -93,6 +103,11 @@ export default class TripList {
         this._clearBoard();
         this._renderBoard({resetSortType: true});
         break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
+        this._renderBoard();
+        break;
     }
   }
 
@@ -102,6 +117,10 @@ export default class TripList {
     Object
       .values(this._eventPresenter)
       .forEach((presenter) => presenter.resetView());
+  }
+
+  _renderLoading() {
+    render(this._boardContainer, this._loadingComponent, RenderPosition.AFTERBEGIN);
   }
 
   _createNewSortTrips() {
@@ -149,9 +168,13 @@ export default class TripList {
   }
 
   _renderBoard() {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
 
     this._renderSort();
-    if (TRIP_COUNT > 0) {
+    if (this._tripsModel.getTrips().length > 0) {
       this._createNewListDay();
 
     } else {
@@ -205,6 +228,8 @@ export default class TripList {
     remove(this._tripListDays);
     remove(this._sortComponent);
     remove(this._withoutTripEvent);
+    remove(this._loadingComponent);
+
     this._numberTrip = 0;
     this._dayCounter = 1;
 

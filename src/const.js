@@ -50,6 +50,48 @@ const restaurant = {
   action: `in`,
   picture: `../img/icons/restaurant.png`
 };
+export const transportType = {
+  taxi: {
+    action: `to`,
+    picture: `./img/icons/taxi.png`
+  },
+  bus: {
+    action: `to`,
+    picture: `../img/icons/bus.png`
+  },
+  train: {
+    action: `to`,
+    picture: `../img/icons/train.png`
+  },
+  ship: {
+    action: `to`,
+    picture: `../img/icons/ship.png`
+  },
+  transport: {
+    action: `to`,
+    picture: `../img/icons/transport.png`
+  },
+  drive: {
+    action: `to`,
+    picture: `../img/icons/drive.png`
+  },
+  fly: {
+    action: `to`,
+    picture: `../img/icons/flight.png`
+  },
+  checkin: {
+    action: `in`,
+    picture: `../img/icons/check-in.png`
+  },
+  sightseeing: {
+    action: `in`,
+    picture: `../img/icons/sightseeing.png`
+  },
+  restaurant: {
+    action: `in`,
+    picture: `../img/icons/restaurant.png`
+  }
+};
 
 export const waypoints = [taxi, bus, train, ship, transport, drive, fly, check, sightseeing, restaurant];
 
@@ -112,7 +154,8 @@ export const UserAction = {
 export const UpdateType = {
   PATCH: `PATCH`,
   MINOR: `MINOR`,
-  MAJOR: `MAJOR`
+  MAJOR: `MAJOR`,
+  INIT: `INIT`
 };
 
 export const FilterType = {

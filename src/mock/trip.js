@@ -4,10 +4,9 @@ import {getRandomInteger} from '../utils';
 const waypoint = () => {
   const randomIndex = getRandomInteger(0, waypoints.length - 1);
   const transportTrip = waypoints[randomIndex];
-  return transportTrip;
+  return transportTrip.name;
 };
 
-export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
 
 const cityName = () => {
   const randomIndex = getRandomInteger(0, cities.length - 1);
@@ -59,7 +58,6 @@ const finishDate = (startTrip) => {
 
 
 export const generateTrip = () => {
-  const id = generateId();
   const transport = waypoint();
   const city = cityName();
   const start = startDate(finishDateNow);
@@ -68,13 +66,12 @@ export const generateTrip = () => {
   const duration = Math.round((finish - start) / 60000);
   const offers = getRandomOffers();
   return {
-    id,
     transport,
     city,
     offers,
     destination: {
-      information: randomInformation(),
-      picture: `http://picsum.photos/248/152?r=${Math.random()}`
+      description: randomInformation(),
+      pictures: []
     },
     price,
     start,

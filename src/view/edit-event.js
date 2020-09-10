@@ -4,11 +4,27 @@ import SmartView from './smart.js';
 import {waypoints, cities} from '../const.js';
 import {toFirstLetterUp} from '../utils/common.js';
 import flatpickr from 'flatpickr';
-import {generateTrip} from '../mock/trip.js';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
-const BLANK_TRIP = generateTrip();
+const BLANK_TRIP = {
+  city: `Vien`,
+  destination: {
+    name: ``,
+    description: ``,
+    pictures: []
+  },
+  duration: 0,
+  finish: ``,
+  isFavorite: false,
+  isFavoriteFlag: false,
+  logo: `./img/icons/taxi.png`,
+  offers: [],
+  price: 0,
+  start: ``,
+  transport: `taxi`
+};
+
 
 const toTransport = waypoints.filter((way) => way.action === `to`);
 const inTransport = waypoints.filter((way) => way.action === `in`);
@@ -26,8 +42,8 @@ const generateCities = () => {
   );
 };
 
-const createPictureDestination = () => {
-  const trips = new Array(5).fill().map(() => `<img class='event__photo' src='http://picsum.photos/248/152?r=${Math.random()}' alt='Event photo'>`);
+const createPictureDestination = (destination) => {
+  const trips = destination.pictures.map((item) => `<img class='event__photo' src='${item.src}' alt='Event photo'>`);
   return trips;
 };
 
@@ -41,13 +57,13 @@ const generateActionTransport = (action) => {
 };
 
 const createEditTripEvent = (data) => {
-  const {transport, city, information, price, isFavoriteFlag} = data;
+  const {transport, logo, city, information, price, isFavoriteFlag, destination} = data;
   return `<form class='event  event--edit' action='#' method='post'>
                     <header class='event__header'>
                       <div class='event__type-wrapper'>
                         <label class='event__type  event__type-btn' for='event-type-toggle-1'>
                           <span class='visually-hidden'>Choose event type</span>
-                          <img class='event__type-icon' width='17' height='17' src='${transport.picture}' alt='Event type icon'>
+                          <img class='event__type-icon' width='17' height='17' src='${logo}' alt='Event type icon'>
                         </label>
                         <input class='event__type-toggle  visually-hidden' id='event-type-toggle-1' type='checkbox'>
 
@@ -66,7 +82,7 @@ const createEditTripEvent = (data) => {
 
                       <div class='event__field-group  event__field-group--destination'>
                         <label class='event__label  event__type-output' for='event-destination-1'>
-                          ${toFirstLetterUp(transport.name)} ${transport.action}
+                          ${toFirstLetterUp(transport)}
                         </label>
                         <input class='event__input  event__input--destination' id='event-destination-1' type='text' name='event-destination' value='${city}' list='destination-list-1'>
                         <datalist id='destination-list-1'>
@@ -167,7 +183,7 @@ const createEditTripEvent = (data) => {
 
                         <div class='event__photos-container'>
                           <div class='event__photos-tape'>
-                            ${createPictureDestination()}
+                            ${createPictureDestination(destination)}
                           </div>
                         </div>
                       </section>
