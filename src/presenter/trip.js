@@ -9,6 +9,11 @@ const Mode = {
   EDITING: `EDITING`
 };
 
+export const State = {
+  SAVING: `SAVING`,
+  DELETING: `DELETING`,
+  ABORTING: `ABORTING`};
+
 
 export default class Trip {
   constructor(tripListElement, changeData, changeMode) {
@@ -70,6 +75,34 @@ export default class Trip {
     }
   }
 
+  setViewState(state) {
+    const resetFormState = () => {
+      this._tripEditComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false
+      });
+    };
+    switch (state) {
+      case State.SAVING:
+        this._tripEditComponent.updateData({
+          isDisabled: true,
+          isSaving: true
+        });
+        break;
+      case State.DELETING:
+        this._tripEditComponent.updateData({
+          isDisabled: true,
+          isDeleting: true
+        });
+        break;
+      case State.ABORTING:
+        this._tripComponent.shake(resetFormState);
+        this._tripEditComponent.shake(resetFormState);
+        break;
+    }
+  }
+
   _handleClickCardArrow() {
     this._replaceCardToForm();
     document.addEventListener(`keydown`, this._onEscKeyDown);
@@ -86,7 +119,6 @@ export default class Trip {
         UpdateType.MINOR,
         trip
     );
-    this._replaceFormToCard();
   }
 
   _handleDeleteClick(trip) {

@@ -35,7 +35,6 @@ export default class Api {
   }
 
   updateTrip(trip) {
-    console.log(trip)
     return this._load({
       url: `points/${trip.id}`,
       method: Method.PUT,

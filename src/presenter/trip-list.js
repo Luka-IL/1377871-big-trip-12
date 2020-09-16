@@ -4,7 +4,7 @@ import TripDay from '../view/trip-day.js';
 import TripEventsList from '../view/trip-events-list.js';
 import WithoutTripEvent from '../view/without-trip.js';
 import SortTripEvent from '../view/sort-events.js';
-import Trip from './trip.js';
+import Trip, {State as TripPresenterViewState} from './trip.js';
 import TripNewPresenter from "./trip-new.js";
 import LoadingView from "../view/loading.js";
 import {filter} from "../utils/filter.js";
@@ -73,18 +73,30 @@ export default class TripList {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_TRIP:
+        this._eventPresenter[update.id].setViewState(TripPresenterViewState.SAVING);
         this._api.updateTrip(update).then((response) => {
           this._tripsModel.updateTrip(updateType, response);
+        })
+        .catch(() => {
+          this._eventPresenter[update.id].setViewState(TripPresenterViewState.ABORTING);
         });
         break;
       case UserAction.ADD_TRIP:
+        this._tripNewPresenter.setSaving();
         this._api.addTrip(update).then((response) => {
           this._tripsModel.addTrip(updateType, response);
+        })
+        .catch(() => {
+          this._tripNewPresenter.setAborting();
         });
         break;
       case UserAction.DELETE_TRIP:
+        this._eventPresenter[update.id].setViewState(TripPresenterViewState.DELETING);
         this._api.deleteTrip(update).then(() => {
           this._tripsModel.deleteTrip(updateType, update);
+        })
+        .catch(() => {
+          this._eventPresenter[update.id].setViewState(TripPresenterViewState.ABORTING);
         });
         break;
     }

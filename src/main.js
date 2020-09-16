@@ -23,6 +23,7 @@ const handleSiteMenuActiveChose = (item) => {
   siteMenuComponent.setMenuItem(item);
 };
 
+
 let statisticsComponent = null;
 
 const handleSiteMenuClick = (menuItem) => {
@@ -62,9 +63,9 @@ api.getTrips()
   tripsModel.setTrips(UpdateType.INIT, trips);
   render(tripControls, siteMenuComponent, RenderPosition.BEFOREEND);
   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
-});
-/*.catch(() => {
+})
+.catch(() => {
   tripsModel.setTrips(UpdateType.INIT, []);
   render(tripControls, siteMenuComponent, RenderPosition.BEFOREEND);
   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
-});*/
+});
