@@ -9,7 +9,7 @@ import StatisticsView from "./view/statistics.js";
 import {MenuItem, UpdateType, FilterType} from "./const.js";
 import Api from './api.js';
 
-const AUTHORIZATION = `Basic xo1w2901k29389a`;
+const AUTHORIZATION = `Basic xo1w2301k29381a`;
 const END_POINT = `https://12.ecmascript.pages.academy/big-trip`;
 
 const api = new Api(END_POINT, AUTHORIZATION);
@@ -62,9 +62,9 @@ api.getTrips()
   tripsModel.setTrips(UpdateType.INIT, trips);
   render(tripControls, siteMenuComponent, RenderPosition.BEFOREEND);
   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
-})
-.catch(() => {
+});
+/*.catch(() => {
   tripsModel.setTrips(UpdateType.INIT, []);
   render(tripControls, siteMenuComponent, RenderPosition.BEFOREEND);
   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
-});
+});*/

@@ -35,6 +35,7 @@ export default class Api {
   }
 
   updateTrip(trip) {
+    console.log(trip)
     return this._load({
       url: `points/${trip.id}`,
       method: Method.PUT,
@@ -47,7 +48,7 @@ export default class Api {
 
   addTrip(trip) {
     return this._load({
-      url: `trips`,
+      url: `points`,
       method: Method.POST,
       body: JSON.stringify(TripsModel.adaptToServer(trip)),
       headers: new Headers({"Content-Type": `application/json`})
@@ -58,7 +59,7 @@ export default class Api {
 
   deleteTrip(trip) {
     return this._load({
-      url: `trips/${trip.id}`,
+      url: `points/${trip.id}`,
       method: Method.DELETE
     });
   }

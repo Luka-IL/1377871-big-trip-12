@@ -58,7 +58,10 @@ export default class Trips extends Observer {
   }
 
   static adaptToClient(trip) {
+    console.log(trip)
     const logoTrip = waypoints.filter((item) => item.name === trip.type)[0];
+    console.log(logoTrip)
+
     const adaptedTrip = Object.assign(
         {},
         trip,
@@ -76,11 +79,10 @@ export default class Trips extends Observer {
 
     // Ненужные ключи мы удаляем
     delete adaptedTrip.is_favorite;
-    delete adaptedTrip.type;
     delete adaptedTrip.date_from;
     delete adaptedTrip.date_to;
     delete adaptedTrip.base_price;
-
+    delete adaptedTrip.type;
     return adaptedTrip;
   }
 
@@ -90,12 +92,10 @@ export default class Trips extends Observer {
         trip,
         {
           "type": trip.transport,
-          "destination.name": trip.city,
           "date_from": trip.start,
           "date_to": trip.finish,
           "base_price": trip.price,
           "is_favorite": trip.isFavorite,
-
         }
     );
 

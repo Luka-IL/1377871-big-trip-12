@@ -35,8 +35,8 @@ const drive = {
   action: `to`,
   picture: `../img/icons/drive.png`
 };
-const fly = {
-  name: `fly`,
+const flight = {
+  name: `flight`,
   action: `to`,
   picture: `../img/icons/flight.png`
 };
@@ -56,7 +56,7 @@ const restaurant = {
   picture: `../img/icons/restaurant.png`
 };
 
-export const waypoints = [taxi, bus, train, ship, transport, drive, fly, check, sightseeing, restaurant];
+export const waypoints = [taxi, bus, train, ship, transport, drive, flight, check, sightseeing, restaurant];
 
 export let offersTrip = [];
 api.getOffers().then((trips) => {
