@@ -55,7 +55,6 @@ const allTrip = new TripList(tripEvents, tripsModel, filterModel, api);
 
 render(tripMain, new TripInfo(), RenderPosition.AFTERBEGIN);
 
-
 filterPresenter.init();
 allTrip.init();
 api.getTrips()
