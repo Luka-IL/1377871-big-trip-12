@@ -1,5 +1,5 @@
 import AbstractView from "./abstract.js";
-import {sortTime} from "../utils/trip.js";
+import {sortEvent} from "../utils/trip.js";
 
 
 const priceAllTrips = (trips) => {
@@ -9,6 +9,7 @@ const priceAllTrips = (trips) => {
 };
 
 const getAllVisitCities = (trips) => {
+  trips.sort(sortEvent);
   const cityName = trips.map((trip) => trip.destination.name);
   let cityBefore = ``;
   let massCities = [];
@@ -26,9 +27,8 @@ const getAllVisitCities = (trips) => {
 };
 
 const getAllTripDates = (trips) => {
-  trips.sort(sortTime);
+  trips.sort(sortEvent);
   if (trips.length > 0) {
-    console.log(trips[0])
     return `${trips[0].start.toLocaleString(`en-US`, {month: `long`})}  ${trips[0].start.getDate()}&nbsp;&mdash;&nbsp;${trips[trips.length - 1].finish.toLocaleString(`en-US`, {month: `long`})} ${trips[trips.length - 1].finish.getDate()}`;
   } else {
     return ``;

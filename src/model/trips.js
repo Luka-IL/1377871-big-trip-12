@@ -1,14 +1,11 @@
 import Observer from "../utils/observer.js";
-import {waypoints} from "../const.js";
-
-const logoTrip = (trip) => waypoints.filter((item) => item.name === trip.type)[0];
 
 const fullPrice = (trip) => {
   let offersPrice = 0;
   trip.offers.forEach((item) => (offersPrice += item.price));
   const allPrice = trip.base_price + offersPrice;
   return allPrice;
-}
+};
 
 export default class Trips extends Observer {
   constructor() {
@@ -77,7 +74,6 @@ export default class Trips extends Observer {
           price: trip.base_price,
           duration: Math.round((new Date(trip.date_to) - new Date(trip.date_from)) / 60000),
           isFavorite: trip.is_favorite,
-          logo: logoTrip(trip).picture,
           fullPrice: fullPrice(trip)
         }
     );

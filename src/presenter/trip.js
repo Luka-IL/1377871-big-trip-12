@@ -1,7 +1,7 @@
 import TripEvent from '../view/trip-event.js';
 import EditTripEvent from '../view/edit-event.js';
 import {RenderPosition, replace, render, remove} from "../utils/render.js";
-import {UserAction, UpdateType, destinationsTrip} from "../const.js";
+import {UserAction, UpdateType} from "../const.js";
 
 
 const Mode = {

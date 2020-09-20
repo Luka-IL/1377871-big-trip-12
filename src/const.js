@@ -1,4 +1,4 @@
-import Api from './api.js';
+import Api from './api/index.js';
 
 const AUTHORIZATION = `Basic xo1w2901k29389a`;
 const END_POINT = `https://12.ecmascript.pages.academy/big-trip`;

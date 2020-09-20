@@ -15,13 +15,12 @@ const BLANK_TRIP = {
     pictures: []
   },
   duration: 0,
-  finish: ``,
+  finish: `2020 02 26 09:00`,
   isFavorite: false,
   isFavoriteFlag: false,
-  logo: `./img/icons/taxi.png`,
   offers: [],
   price: 0,
-  start: ``,
+  start: `2020 02 26, 08:00`,
   transport: `taxi`
 };
 
@@ -30,17 +29,22 @@ const toTransport = waypoints.filter((way) => way.action === `to`);
 const inTransport = waypoints.filter((way) => way.action === `in`);
 
 const humansDateStartDay = (start) => {
-  return moment(start).format('D MM Y, h:mm:ss');
+  return moment(start).format(`D MM Y hh:mm`);
 };
 
 const humansDateFinish = (finish) => {
-  return moment(finish).format('D MM Y, h:mm:ss');
+  return moment(finish).format(`D MM Y hh:mm`);
 };
 
 const generateCities = () => {
   return destinationsTrip.map((city) => `<option class='event__destination-input' value=${city.name}></option>`
   );
 };
+
+export const logoTrip = (trip) => {
+  return waypoints.filter((item) => item.name === trip.transport)[0].picture;
+};
+
 
 const createPictureDestination = (pictures) => {
   const trips = pictures.map((item) => `<img class='event__pho to' src='${item.src}' alt='Event photo'>`);
@@ -78,14 +82,13 @@ const generateActionTransport = (action) => {
 };
 
 const createEditTripEvent = (data) => {
-  const {transport, logo, destination, price, isFavoriteFlag, offers, isSaving, isDeleting, isDisabled, start, finish} = data;
-  console.log(offers)
+  const {transport, destination, price, isFavoriteFlag, offers, isSaving, isDeleting, isDisabled, start, finish} = data;
   return `<form class='event  event--edit' action='#' method='post'>
                     <header class='event__header'>
                       <div class='event__type-wrapper'>
                         <label class='event__type  event__type-btn' for='event-type-toggle-1'>
                           <span class='visually-hidden'>Choose event type</span>
-                          <img class='event__type-icon' width='17' height='17' src='${logo}' alt='Event type icon'>
+                          <img class='event__type-icon' width='17' height='17' src='${logoTrip(data)}' alt='Event type icon'>
                         </label>
                         <input class='event__type-toggle  visually-hidden' id='event-type-toggle-1' type='checkbox'>
 
@@ -159,7 +162,7 @@ const createEditTripEvent = (data) => {
                         </div>
                       </section>
                       <section class='event__section  event__section--destination'>
-                        <h3 class='event__section-title  event__section-title--destination'>Destination</h3>
+                        <h3 class='event__section-title  event__section-title--destination'>${(destination.description) ? `Destination` : ``}</h3>
                         <p class='event__destination-description'>${destination.description}</p>
 
                         <div class='event__photos-container'>
@@ -327,7 +330,8 @@ export default class EditTripEvent extends SmartView {
   _changeTransportClickHandler(evt) {
     this._offers = [];
     this.updateData({
-      transport: evt.target.value
+      transport: evt.target.value,
+      offers: []
     });
   }
 

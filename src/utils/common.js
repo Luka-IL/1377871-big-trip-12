@@ -14,7 +14,7 @@ export const toFirstLetterUp = (item) => {
 export const actionTransport = (transport) => {
   const activeTransport = waypoints.filter((way) => way.name === transport)[0];
   return activeTransport.action;
-}
+};
 
 export const getRandomBoolean = () => Boolean(getRandomInteger(0, 1));
 

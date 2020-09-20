@@ -2,6 +2,7 @@ import he from 'he';
 import AbstractView from './abstract.js';
 import {toFirstLetterUp} from '../utils/common.js';
 import {actionTransport} from '../utils/common.js';
+import {logoTrip} from '../view/edit-event.js';
 
 
 const pointZero = (time) => {
@@ -45,13 +46,13 @@ const normalDuration = (duration) => {
 };
 
 export const createTripEvent = (trip) => {
-  const {logo, destination, start, finish, price, offers, duration, transport} = trip;
+  const {destination, start, finish, price, offers, duration, transport} = trip;
 
   return (
     `<li class='trip-events__item'>
         <div class='event'>
           <div class='event__type'>
-            <img class='event__type-icon' width='42' height='42' src=${logo} alt='Event type icon'>
+            <img class='event__type-icon' width='42' height='42' src=${logoTrip(trip)} alt='Event type icon'>
           </div> 
           <h3 class='event__title'>${toFirstLetterUp(transport)} ${actionTransport(transport)} ${he.encode(destination.name)}</h3>
 
