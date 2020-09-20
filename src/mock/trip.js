@@ -1,13 +1,12 @@
-import {waypoints, offersTrip, cities, informations} from '../const.js';
+import {waypoints, cities, informations} from '../const.js';
 import {getRandomInteger} from '../utils';
 
 const waypoint = () => {
   const randomIndex = getRandomInteger(0, waypoints.length - 1);
   const transportTrip = waypoints[randomIndex];
-  return transportTrip;
+  return transportTrip.name;
 };
 
-export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
 
 const cityName = () => {
   const randomIndex = getRandomInteger(0, cities.length - 1);
@@ -23,22 +22,6 @@ const randomInformation = () => {
     informationTravel += informations[randomIndex];
   }
   return informationTravel;
-};
-
-const getRandomOffers = () => {
-  let offersOneTrip = [];
-  const offersGroupTrip = Object.entries(offersTrip);
-  let indexOffers = -1;
-  let secondIndexOffers = -1;
-  const randomSumOffers = getRandomInteger(1, 3);
-  for (let i = 1; i <= randomSumOffers; i++) {
-    indexOffers = getRandomInteger(0, 4);
-    if (indexOffers !== secondIndexOffers) {
-      offersOneTrip.push(offersGroupTrip[indexOffers]);
-    }
-    secondIndexOffers = indexOffers;
-  }
-  return offersOneTrip;
 };
 
 let finishDateNow = new Date(2020, 8, 12);
@@ -59,22 +42,18 @@ const finishDate = (startTrip) => {
 
 
 export const generateTrip = () => {
-  const id = generateId();
   const transport = waypoint();
   const city = cityName();
   const start = startDate(finishDateNow);
   const finish = finishDate(start);
   const price = getRandomInteger(0, 300);
   const duration = Math.round((finish - start) / 60000);
-  const offers = getRandomOffers();
   return {
-    id,
     transport,
     city,
-    offers,
     destination: {
-      information: randomInformation(),
-      picture: `http://picsum.photos/248/152?r=${Math.random()}`
+      description: randomInformation(),
+      pictures: []
     },
     price,
     start,

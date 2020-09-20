@@ -1,15 +1,30 @@
 import moment from 'moment';
-import he from 'he';
 
 import SmartView from './smart.js';
-import {waypoints, cities} from '../const.js';
+import {waypoints, cities, offersTrip} from '../const.js';
 import {toFirstLetterUp} from '../utils/common.js';
 import flatpickr from 'flatpickr';
-import {generateTrip} from '../mock/trip.js'
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
-const BLANK_TRIP = generateTrip();
+const BLANK_TRIP = {
+  city: `Vien`,
+  destination: {
+    name: ``,
+    description: ``,
+    pictures: []
+  },
+  duration: 0,
+  finish: ``,
+  isFavorite: false,
+  isFavoriteFlag: false,
+  logo: `./img/icons/taxi.png`,
+  offers: [],
+  price: 0,
+  start: ``,
+  transport: `taxi`
+};
+
 
 const toTransport = waypoints.filter((way) => way.action === `to`);
 const inTransport = waypoints.filter((way) => way.action === `in`);
@@ -27,9 +42,30 @@ const generateCities = () => {
   );
 };
 
-const createPictureDestination = () => {
-  const trips = new Array(5).fill().map(() => `<img class='event__photo' src='http://picsum.photos/248/152?r=${Math.random()}' alt='Event photo'>`);
+const createPictureDestination = (destination) => {
+  const trips = destination.pictures.map((item) => `<img class='event__photo' src='${item.src}' alt='Event photo'>`);
   return trips;
+};
+
+const createOffersTransport = (transport, offers) => {
+  const typeTransport = offersTrip.filter((item) => item.type === transport)[0];
+  let numIdInput = 0;
+  if (typeTransport !== undefined) {
+    return typeTransport.offers.map((item) => {
+      numIdInput += 1;
+      return `<div class='event__offer-selector'>
+  <input class='event__offer-checkbox  visually-hidden' id='${transport}-${numIdInput}' value='${item.title}' type='checkbox' name='${transport}' ${(offers.find((offer) => offer.title === item.title))}>
+  <label class='event__offer-label' for='${transport}-${numIdInput}'>
+    <span class='event__offer-title'>${item.title}</span>
+    &plus;
+    &euro;&nbsp;<span class='event__offer-price'>${item.price}</span>
+  </label>
+</div>`;
+    }).join(``);
+  } else {
+    return ``;
+  }
+
 };
 
 const generateActionTransport = (action) => {
@@ -42,13 +78,13 @@ const generateActionTransport = (action) => {
 };
 
 const createEditTripEvent = (data) => {
-  const {transport, city, information, price, isFavoriteFlag} = data;
+  const {transport, logo, city, price, isFavoriteFlag, destination, offers} = data;
   return `<form class='event  event--edit' action='#' method='post'>
                     <header class='event__header'>
                       <div class='event__type-wrapper'>
                         <label class='event__type  event__type-btn' for='event-type-toggle-1'>
                           <span class='visually-hidden'>Choose event type</span>
-                          <img class='event__type-icon' width='17' height='17' src='${transport.picture}' alt='Event type icon'>
+                          <img class='event__type-icon' width='17' height='17' src='${logo}' alt='Event type icon'>
                         </label>
                         <input class='event__type-toggle  visually-hidden' id='event-type-toggle-1' type='checkbox'>
 
@@ -67,11 +103,11 @@ const createEditTripEvent = (data) => {
 
                       <div class='event__field-group  event__field-group--destination'>
                         <label class='event__label  event__type-output' for='event-destination-1'>
-                          ${toFirstLetterUp(transport.name)} ${transport.action}
+                          ${toFirstLetterUp(transport)}
                         </label>
                         <input class='event__input  event__input--destination' id='event-destination-1' type='text' name='event-destination' value='${city}' list='destination-list-1'>
                         <datalist id='destination-list-1'>
-                          ${he.encode(generateCities())}
+                          ${generateCities()}
                         </datalist>
                       </div>
 
@@ -116,59 +152,16 @@ const createEditTripEvent = (data) => {
                         <h3 class='event__section-title  event__section-title--offers'>Offers</h3>
 
                         <div class='event__available-offers'>
-                          <div class='event__offer-selector'>
-                            <input class='event__offer-checkbox  visually-hidden' id='event-offer-luggage-1' type='checkbox' name='event-offer-luggage' checked>
-                            <label class='event__offer-label' for='event-offer-luggage-1'>
-                              <span class='event__offer-title'>Add luggage</span>
-                              &plus;
-                              &euro;&nbsp;<span class='event__offer-price'>30</span>
-                            </label>
-                          </div>
-
-                          <div class='event__offer-selector'>
-                            <input class='event__offer-checkbox  visually-hidden' id='event-offer-comfort-1' type='checkbox' name='event-offer-comfort' checked>
-                            <label class='event__offer-label' for='event-offer-comfort-1'>
-                              <span class='event__offer-title'>Switch to comfort class</span>
-                              &plus;
-                              &euro;&nbsp;<span class='event__offer-price'>100</span>
-                            </label>
-                          </div>
-
-                          <div class='event__offer-selector'>
-                            <input class='event__offer-checkbox  visually-hidden' id='event-offer-meal-1' type='checkbox' name='event-offer-meal'>
-                            <label class='event__offer-label' for='event-offer-meal-1'>
-                              <span class='event__offer-title'>Add meal</span>
-                              &plus;
-                              &euro;&nbsp;<span class='event__offer-price'>15</span>
-                            </label>
-                          </div>
-
-                          <div class='event__offer-selector'>
-                            <input class='event__offer-checkbox  visually-hidden' id='event-offer-seats-1' type='checkbox' name='event-offer-seats'>
-                            <label class='event__offer-label' for='event-offer-seats-1'>
-                              <span class='event__offer-title'>Choose seats</span>
-                              &plus;
-                              &euro;&nbsp;<span class='event__offer-price'>5</span>
-                            </label>
-                          </div>
-
-                          <div class='event__offer-selector'>
-                            <input class='event__offer-checkbox  visually-hidden' id='event-offer-train-1' type='checkbox' name='event-offer-train'>
-                            <label class='event__offer-label' for='event-offer-train-1'>
-                              <span class='event__offer-title'>Travel by train</span>
-                              &plus;
-                              &euro;&nbsp;<span class='event__offer-price'>40</span>
-                            </label>
-                          </div>
+                          ${createOffersTransport(transport, offers)}
                         </div>
                       </section>
                       <section class='event__section  event__section--destination'>
                         <h3 class='event__section-title  event__section-title--destination'>Destination</h3>
-                        <p class='event__destination-description'>${information}</p>
+                        <p class='event__destination-description'>${destination.description}</p>
 
                         <div class='event__photos-container'>
                           <div class='event__photos-tape'>
-                            ${createPictureDestination()}
+                            ${createPictureDestination(destination)}
                           </div>
                         </div>
                       </section>
@@ -182,10 +175,12 @@ export default class EditTripEvent extends SmartView {
     this._datepickerStart = null;
     this._datepickerFinish = null;
     this._data = EditTripEvent.parseTripToData(trip);
+    this._offers = trip.offers;
 
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._handleSubmitFormEditEvent = this._handleSubmitFormEditEvent.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+    this._offerClickHandler = this._offerClickHandler.bind(this);
     this._priceInputHandler = this._priceInputHandler.bind(this);
     this._startChangeHandler = this._startChangeHandler.bind(this);
     this._finishChangeHandler = this._finishChangeHandler.bind(this);
@@ -250,6 +245,29 @@ export default class EditTripEvent extends SmartView {
     this.getElement().querySelector(`.event__favorite-checkbox`).addEventListener(`change`, this._favoriteClickHandler);
   }
 
+  _offerClickHandler(evt) {
+    evt.preventDefault();
+    let activateOffer = this._offers.filter((item) => item.title === evt.target.value);
+    if (activateOffer.length > 0) {
+      this._offers = this._offers.filter((item) => item.title !== activateOffer[0].title);
+    } else {
+      const activateTransport = offersTrip.filter((item) => item.type === this._data.transport);
+      activateOffer = activateTransport[0].offers.filter((item) => item.title === evt.target.value);
+      this._offers.push(activateOffer[0]);
+    }
+    this._callback.clickOffer(this._offers);
+  }
+
+  setOffersClickHandler(callback) {
+    this._callback.clickOffer = callback;
+    const offersButtons = this.getElement().querySelectorAll(`.event__offer-checkbox`);
+    if (offersButtons.length > 0) {
+      offersButtons.forEach((item) => item.addEventListener(`change`, this._offerClickHandler));
+    } else {
+      return;
+    }
+  }
+
   setSubmitFormEditEvent(callback) {
     this._callback.submitForm = callback;
     this.getElement().addEventListener(`submit`, this._handleSubmitFormEditEvent);
@@ -286,7 +304,7 @@ export default class EditTripEvent extends SmartView {
 
   _priceInputHandler(evt) {
     this.updateData({
-      price: evt.target.value
+      price: Number(evt.target.value)
     }, true);
   }
 

@@ -3,15 +3,15 @@ import AbstractView from './abstract.js';
 import {toFirstLetterUp} from '../utils/common.js';
 
 export const createTripEvent = (trip) => {
-  const {transport, city, start, finish, price, offers, duration} = trip;
+  const {logo, city, start, finish, price, offers, duration} = trip;
 
   const generateOffers = (offer) => {
     if (offer === null) {
       return ``;
     }
-    const newOffers = offer.map(([, object]) =>
+    const newOffers = offer.map((object) =>
       `<li class='event__offer'>
-              <span class='event__offer-title'>${object.name}</span>
+              <span class='event__offer-title'>${object.title}</span>
               &plus;
               &euro;&nbsp;<span class='event__offer-price'>${object.price}</span>
            </li>`
@@ -43,9 +43,9 @@ export const createTripEvent = (trip) => {
     `<li class='trip-events__item'>
         <div class='event'>
           <div class='event__type'>
-            <img class='event__type-icon' width='42' height='42' src=${transport.picture} alt='Event type icon'>
+            <img class='event__type-icon' width='42' height='42' src=${logo} alt='Event type icon'>
           </div>
-          <h3 class='event__title'>${toFirstLetterUp(trip.transport.name)} ${transport.action} ${he.encode(city)}</h3>
+          <h3 class='event__title'>${toFirstLetterUp(trip.transport)} to ${he.encode(city)}</h3>
 
           <div class='event__schedule'>
             <p class='event__time'>

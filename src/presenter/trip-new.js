@@ -1,5 +1,4 @@
 import EditTripEvent from "../view/edit-event.js";
-import {generateId} from "../mock/trip.js";
 import {remove, render, RenderPosition} from "../utils/render.js";
 import {UserAction, UpdateType} from "../const.js";
 
@@ -8,6 +7,7 @@ export default class TripNew {
     this._tripListContainer = tripListContainer;
     this._changeData = changeData;
 
+    this._destroyCallback = null;
     this._tripEditComponent = null;
 
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
@@ -15,7 +15,9 @@ export default class TripNew {
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
-  init() {
+  init(callback) {
+    this._destroyCallback = callback;
+
     if (this._tripEditComponent !== null) {
       return;
     }
@@ -33,6 +35,9 @@ export default class TripNew {
     if (this._tripEditComponent === null) {
       return;
     }
+    if (this._destroyCallback !== null) {
+      this._destroyCallback(`TABLE`);
+    }
 
     remove(this._tripEditComponent);
     this._tripEditComponent = null;
@@ -44,7 +49,7 @@ export default class TripNew {
     this._changeData(
         UserAction.ADD_TRIP,
         UpdateType.MINOR,
-        Object.assign({id: generateId()}, trip)
+        trip
     );
     this.destroy();
   }

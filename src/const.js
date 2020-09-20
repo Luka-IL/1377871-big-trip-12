@@ -1,4 +1,9 @@
-import {getRandomBoolean} from './utils/common.js';
+import Api from './api.js';
+
+const AUTHORIZATION = `Basic xo1w2901k29389a`;
+const END_POINT = `https://12.ecmascript.pages.academy/big-trip`;
+
+const api = new Api(END_POINT, AUTHORIZATION);
 
 const taxi = {
   name: `taxi`,
@@ -30,8 +35,8 @@ const drive = {
   action: `to`,
   picture: `../img/icons/drive.png`
 };
-const fly = {
-  name: `fly`,
+const flight = {
+  name: `flight`,
   action: `to`,
   picture: `../img/icons/flight.png`
 };
@@ -51,40 +56,12 @@ const restaurant = {
   picture: `../img/icons/restaurant.png`
 };
 
-export const waypoints = [taxi, bus, train, ship, transport, drive, fly, check, sightseeing, restaurant];
+export const waypoints = [taxi, bus, train, ship, transport, drive, flight, check, sightseeing, restaurant];
 
-export const offersTrip = {
-  luggage: {
-    active: getRandomBoolean(),
-    type: `offers`,
-    name: `Add luggage`,
-    price: 30
-  },
-  comfort: {
-    active: getRandomBoolean(),
-    type: `offers`,
-    name: `Switch to comfort class`,
-    price: 100
-  },
-  meal: {
-    active: getRandomBoolean(),
-    type: `offers`,
-    name: `Add meal`,
-    price: 15
-  },
-  seats: {
-    active: getRandomBoolean(),
-    type: `offers`,
-    name: `Choose seats`,
-    price: 5
-  },
-  train: {
-    active: getRandomBoolean(),
-    type: `offers`,
-    name: `Travel by train`,
-    price: 40
-  },
-};
+export let offersTrip = [];
+api.getOffers().then((trips) => {
+  trips.forEach((item) => offersTrip.push(item));
+});
 
 export const cities = [`Amsterdam`, `Moscow`, `New - York`, `Istambul`, `Dubai`, `Singapore`];
 
@@ -112,11 +89,18 @@ export const UserAction = {
 export const UpdateType = {
   PATCH: `PATCH`,
   MINOR: `MINOR`,
-  MAJOR: `MAJOR`
+  MAJOR: `MAJOR`,
+  INIT: `INIT`
 };
 
 export const FilterType = {
   ALL: `all`,
   FUTURE: `future`,
   PAST: `past`,
+};
+
+export const MenuItem = {
+  ADD_TRIP_EVENT: `ADD_TRIP_EVENT`,
+  STATS: `STATS`,
+  TABLE: `TABLE`
 };
