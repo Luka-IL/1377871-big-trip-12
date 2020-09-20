@@ -70,7 +70,7 @@ apiWithProvider.getTrips()
   render(tripControls, siteMenuComponent, RenderPosition.BEFOREEND);
   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
   const handleTripInfoRefresh = (trip) => {
-    let newChild = new TripInfo(trip);
+    const newChild = new TripInfo(trip);
     replace(newChild, tripInfo);
     tripInfo = newChild;
   };

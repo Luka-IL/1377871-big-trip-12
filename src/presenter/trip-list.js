@@ -224,7 +224,7 @@ export default class TripList {
   }
 
   _createNewTrips() {
-    let dataTripNow = this._getTrips()[this._numberTrip].start.getDate();
+    const dataTripNow = this._getTrips()[this._numberTrip].start.getDate();
     for (this._numberTrip; this._numberTrip < this._getTrips().length; this._numberTrip++) {
       if (dataTripNow === this._getTrips()[this._numberTrip].start.getDate()) {
         this._renderTripEvent(this._tripEventsList, this._getTrips()[this._numberTrip]);

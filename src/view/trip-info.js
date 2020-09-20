@@ -12,7 +12,7 @@ const getAllVisitCities = (trips) => {
   trips.sort(sortEvent);
   const cityName = trips.map((trip) => trip.destination.name);
   let cityBefore = ``;
-  let massCities = [];
+  const massCities = [];
   for (let i = 0; i < cityName.length; i++) {
     if (cityName[i] !== cityBefore) {
       massCities.push(cityName[i]);
