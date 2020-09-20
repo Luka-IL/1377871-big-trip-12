@@ -1,5 +1,11 @@
 import Observer from "../utils/observer.js";
-import {waypoints} from "../const.js";
+
+const fullPrice = (trip) => {
+  let offersPrice = 0;
+  trip.offers.forEach((item) => (offersPrice += item.price));
+  const allPrice = trip.base_price + offersPrice;
+  return allPrice;
+};
 
 export default class Trips extends Observer {
   constructor() {
@@ -58,20 +64,17 @@ export default class Trips extends Observer {
   }
 
   static adaptToClient(trip) {
-    const logoTrip = waypoints.filter((item) => item.name === trip.type)[0];
-
     const adaptedTrip = Object.assign(
         {},
         trip,
         {
           transport: trip.type,
-          city: trip.destination.name,
           start: new Date(trip.date_from),
           finish: new Date(trip.date_to),
           price: trip.base_price,
           duration: Math.round((new Date(trip.date_to) - new Date(trip.date_from)) / 60000),
           isFavorite: trip.is_favorite,
-          logo: logoTrip.picture
+          fullPrice: fullPrice(trip)
         }
     );
 
@@ -81,6 +84,7 @@ export default class Trips extends Observer {
     delete adaptedTrip.date_to;
     delete adaptedTrip.base_price;
     delete adaptedTrip.type;
+
     return adaptedTrip;
   }
 
@@ -99,7 +103,6 @@ export default class Trips extends Observer {
 
     // Ненужные ключи мы удаляем
     delete adaptedTrip.transport;
-    delete adaptedTrip.city;
     delete adaptedTrip.finish;
     delete adaptedTrip.start;
     delete adaptedTrip.price;

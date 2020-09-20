@@ -26,6 +26,7 @@ export default class TripNew {
     this._tripEditComponent.setSubmitFormEditEvent(this._handleFormSubmit);
     this._tripEditComponent.setDeleteClickHandler(this._handleDeleteClick);
 
+
     render(this._tripListContainer, this._tripEditComponent, RenderPosition.AFTERBEGIN);
 
     document.addEventListener(`keydown`, this._escKeyDownHandler);

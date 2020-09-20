@@ -1,4 +1,4 @@
-import TripsModel from './model/trips';
+import TripsModel from '../model/trips';
 
 const Method = {
   GET: `GET`,
@@ -61,6 +61,16 @@ export default class Api {
       url: `points/${trip.id}`,
       method: Method.DELETE
     });
+  }
+
+  sync(data) {
+    return this._load({
+      url: `points/sync`,
+      method: Method.POST,
+      body: JSON.stringify(data),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then(Api.toJSON);
   }
 
   _load({

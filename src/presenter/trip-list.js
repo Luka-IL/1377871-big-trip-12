@@ -22,11 +22,12 @@ export default class TripList {
     this._isLoading = true;
     this._sortComponent = null;
     this._tripListDays = null;
-    this._tripNewPresenter = null;
+
+    this._callback = {};
     this._withoutTripEvent = new WithoutTripEvent();
     this._dayCounter = 1;
     this._numberTrip = 0;
-    this._currentSortType = `time`;
+    this._currentSortType = `event`;
     this._eventPresenter = {};
 
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
@@ -52,6 +53,10 @@ export default class TripList {
 
     this._tripsModel.removeObserver(this._handleModelEvent);
     this._filterModel.removeObserver(this._handleModelEvent);
+  }
+
+  setRefreshPrice(callback) {
+    this._callback.refreshPrice = callback;
   }
 
   _getTrips() {
@@ -83,6 +88,7 @@ export default class TripList {
         break;
       case UserAction.ADD_TRIP:
         this._tripNewPresenter.setSaving();
+
         this._api.addTrip(update).then((response) => {
           this._tripsModel.addTrip(updateType, response);
         })
@@ -110,10 +116,12 @@ export default class TripList {
       case UpdateType.MINOR:
         this._clearBoard();
         this._renderBoard();
+        this._callback.refreshPrice(this._tripsModel.getTrips());
         break;
       case UpdateType.MAJOR:
         this._clearBoard();
         this._renderBoard({resetSortType: true});
+        this._callback.refreshPrice(this._tripsModel.getTrips());
         break;
       case UpdateType.INIT:
         this._isLoading = false;
@@ -154,7 +162,7 @@ export default class TripList {
     } else {
       this._currentSortType = sortType;
       this._clearBoard();
-      if (sortType === `time`) {
+      if (sortType === `event`) {
         this._renderBoard();
       } else {
         this._createNewSortTrips();

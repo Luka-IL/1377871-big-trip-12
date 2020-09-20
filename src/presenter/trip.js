@@ -26,8 +26,6 @@ export default class Trip {
     this._mode = Mode.DEFAULT;
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
     this._handleClickCardArrow = this._handleClickCardArrow.bind(this);
-    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
-    this._handleOfferClick = this._handleOfferClick.bind(this);
     this._handleSubmitFormEditEvent = this._handleSubmitFormEditEvent.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
@@ -45,7 +43,6 @@ export default class Trip {
     this._tripEditComponent.setSubmitFormEditEvent(this._handleSubmitFormEditEvent);
     this._tripEditComponent.setClickFavoriteStar(this._handleFavoriteClick);
     this._tripEditComponent.setDeleteClickHandler(this._handleDeleteClick);
-    this._tripEditComponent.setOffersClickHandler(this._handleOfferClick);
 
     if (prevTripComponent === null || prevtripAddComponent === null) {
       render(this._tripListElement, this._tripComponent, RenderPosition.BEFOREEND);
@@ -116,7 +113,7 @@ export default class Trip {
   _handleSubmitFormEditEvent(trip) {
     this._changeData(
         UserAction.UPDATE_TRIP,
-        UpdateType.MINOR,
+        UpdateType.MAJOR,
         trip
     );
   }
@@ -124,7 +121,7 @@ export default class Trip {
   _handleDeleteClick(trip) {
     this._changeData(
         UserAction.DELETE_TRIP,
-        UpdateType.MINOR,
+        UpdateType.MAJOR,
         trip
     );
   }
@@ -141,34 +138,6 @@ export default class Trip {
     document.removeEventListener(`keydown`, this._onEscKeyDown);
     this._mode = Mode.DEFAULT;
 
-  }
-
-  _handleFavoriteClick() {
-    this._changeData(
-        UserAction.UPDATE_TRIP,
-        UpdateType.MINOR,
-        Object.assign(
-            {},
-            this._trip,
-            {
-              isFavorite: !this._trip.isFavorite
-            }
-        )
-    );
-  }
-
-  _handleOfferClick(offers) {
-    this._changeData(
-        UserAction.UPDATE_TRIP,
-        UpdateType.PATCH,
-        Object.assign(
-            {},
-            this._trip,
-            this._trip.offers = {
-              offers
-            }
-        )
-    );
   }
 
   _onEscKeyDown(evt) {
