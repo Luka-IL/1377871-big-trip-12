@@ -78,7 +78,7 @@ const generateActionTransport = (action) => {
 };
 
 const createEditTripEvent = (data) => {
-  const {transport, logo, city, price, isFavoriteFlag, destination, offers} = data;
+  const {transport, logo, city, price, isFavoriteFlag, destination, offers, isSaving, isDeleting, isDisabled} = data;
   return `<form class='event  event--edit' action='#' method='post'>
                     <header class='event__header'>
                       <div class='event__type-wrapper'>
@@ -130,10 +130,12 @@ const createEditTripEvent = (data) => {
                         </label>
                         <input class='event__input  event__input--price' id='event-price-1' type='text' name='event-price' value='${price}'>
                       </div>
-
-                      <button class='event__save-btn  btn  btn--blue' type='submit'>Save</button>
-                      <button class='event__reset-btn' type='reset'>Delete</button>
-
+                      <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? `disabled` : ``}>
+                      ${isSaving ? `saving...` : `save`}
+                      </button>                      
+                      <button class="event__reset-btn" type="button" ${isDisabled ? `disabled` : ``}>
+                        ${isDeleting ? `deleting...` : `delete`}
+                      </button>
                       <input id='event-favorite-1' class='event__favorite-checkbox  visually-hidden' type='checkbox' name='event-favorite' ${isFavoriteFlag ? `checked` : ``}>
                       <label class='event__favorite-btn' for='event-favorite-1'>
                         <span class='visually-hidden'>Add to favorite</span>
@@ -336,6 +338,9 @@ export default class EditTripEvent extends SmartView {
         trip,
         {
           isFavoriteFlag: trip.isFavorite,
+          isDisabled: false,
+          isSaving: false,
+          isDeleting: false
         }
     );
   }
@@ -343,12 +348,10 @@ export default class EditTripEvent extends SmartView {
   static parseDataToTrip(data) {
 
     data = Object.assign({}, data);
-
-    if (!data.isFavoriteFlag) {
-      data.isFavorite = false;
-    }
-
     delete data.isFavoriteFlag;
+    delete data.isDisabled;
+    delete data.isSaving;
+    delete data.isDeleting;
     return data;
   }
 }

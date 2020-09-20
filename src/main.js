@@ -23,6 +23,7 @@ const handleSiteMenuActiveChose = (item) => {
   siteMenuComponent.setMenuItem(item);
 };
 
+
 let statisticsComponent = null;
 
 const handleSiteMenuClick = (menuItem) => {
@@ -54,7 +55,6 @@ const allTrip = new TripList(tripEvents, tripsModel, filterModel, api);
 
 render(tripMain, new TripInfo(), RenderPosition.AFTERBEGIN);
 
-
 filterPresenter.init();
 allTrip.init();
 api.getTrips()
@@ -62,9 +62,9 @@ api.getTrips()
   tripsModel.setTrips(UpdateType.INIT, trips);
   render(tripControls, siteMenuComponent, RenderPosition.BEFOREEND);
   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
-});
-/*.catch(() => {
+})
+.catch(() => {
   tripsModel.setTrips(UpdateType.INIT, []);
   render(tripControls, siteMenuComponent, RenderPosition.BEFOREEND);
   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
-});*/
+});

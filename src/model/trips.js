@@ -58,9 +58,7 @@ export default class Trips extends Observer {
   }
 
   static adaptToClient(trip) {
-    console.log(trip)
     const logoTrip = waypoints.filter((item) => item.name === trip.type)[0];
-    console.log(logoTrip)
 
     const adaptedTrip = Object.assign(
         {},
