@@ -1,7 +1,7 @@
 import TripInfo from './view/trip-info.js';
 import SiteMenu from './view/site-menu.js';
 import TripModel from "./model/trips.js";
-import {RenderPosition, render, remove} from "./utils/render.js";
+import {RenderPosition, render, remove, replace} from "./utils/render.js";
 import TripList from './presenter/trip-list.js';
 import FilterModel from "./model/filter.js";
 import FilterPresenter from "./presenter/filter.js";
@@ -22,7 +22,6 @@ const siteMenuComponent = new SiteMenu();
 const handleSiteMenuActiveChose = (item) => {
   siteMenuComponent.setMenuItem(item);
 };
-
 
 let statisticsComponent = null;
 
@@ -48,23 +47,30 @@ const handleSiteMenuClick = (menuItem) => {
       break;
   }
 };
+
 const filterPresenter = new FilterPresenter(tripControls, filterModel, tripsModel);
 const pageMain = document.querySelector(`.page-main`);
 const tripEvents = pageMain.querySelector(`.trip-events`);
 const allTrip = new TripList(tripEvents, tripsModel, filterModel, api);
-
-render(tripMain, new TripInfo(), RenderPosition.AFTERBEGIN);
-
 
 filterPresenter.init();
 allTrip.init();
 api.getTrips()
 .then((trips) => {
   tripsModel.setTrips(UpdateType.INIT, trips);
+  let tripInfo = new TripInfo(tripsModel.getTrips());
+  render(tripMain, tripInfo, RenderPosition.AFTERBEGIN);
   render(tripControls, siteMenuComponent, RenderPosition.BEFOREEND);
   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+  const handleTripInfoRefresh = (trip) => {
+    let newChild = new TripInfo(trip);
+    replace(newChild, tripInfo);
+    tripInfo = newChild;
+  };
+  allTrip.setRefreshPrice(handleTripInfoRefresh);
 })
 .catch(() => {
+  render(tripMain, new TripInfo(), RenderPosition.AFTERBEGIN);
   tripsModel.setTrips(UpdateType.INIT, []);
   render(tripControls, siteMenuComponent, RenderPosition.BEFOREEND);
   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);

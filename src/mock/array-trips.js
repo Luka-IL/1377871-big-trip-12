@@ -1,4 +1,4 @@
-
+/*
 import {generateTrip} from '../mock/trip.js';
 
 export const TRIP_COUNT = 11;
@@ -12,3 +12,4 @@ export const trips = new Array(TRIP_COUNT).fill().map(generateTrip).sort((a, b) 
   return 0;
 });
 
+*/

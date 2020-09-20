@@ -1,4 +1,4 @@
-import {waypoints, cities, informations} from '../const.js';
+/*import {waypoints, cities, informations} from '../const.js';
 import {getRandomInteger} from '../utils';
 
 const waypoint = () => {
@@ -63,3 +63,4 @@ export const generateTrip = () => {
   };
 };
 
+*/

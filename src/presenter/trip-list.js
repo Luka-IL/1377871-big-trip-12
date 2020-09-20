@@ -23,6 +23,7 @@ export default class TripList {
     this._sortComponent = null;
     this._tripListDays = null;
     this._tripNewPresenter = null;
+    this._callback = {};
     this._withoutTripEvent = new WithoutTripEvent();
     this._dayCounter = 1;
     this._numberTrip = 0;
@@ -54,6 +55,11 @@ export default class TripList {
     this._filterModel.removeObserver(this._handleModelEvent);
   }
 
+  setRefreshPrice(callback) {
+    console.log(callback)
+    this._callback.refreshPrice = callback;
+  }
+
   _getTrips() {
     const filterType = this._filterModel.getFilter();
     const trips = this._tripsModel.getTrips();
@@ -76,10 +82,10 @@ export default class TripList {
         this._eventPresenter[update.id].setViewState(TripPresenterViewState.SAVING);
         this._api.updateTrip(update).then((response) => {
           this._tripsModel.updateTrip(updateType, response);
-        })
+        });/*
         .catch(() => {
           this._eventPresenter[update.id].setViewState(TripPresenterViewState.ABORTING);
-        });
+        });*/
         break;
       case UserAction.ADD_TRIP:
         this._tripNewPresenter.setSaving();
@@ -110,10 +116,12 @@ export default class TripList {
       case UpdateType.MINOR:
         this._clearBoard();
         this._renderBoard();
+        this._callback.refreshPrice(this._tripsModel.getTrips());
         break;
       case UpdateType.MAJOR:
         this._clearBoard();
         this._renderBoard({resetSortType: true});
+        this._callback.refreshPrice(this._tripsModel.getTrips());
         break;
       case UpdateType.INIT:
         this._isLoading = false;

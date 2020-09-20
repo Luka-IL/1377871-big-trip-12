@@ -1,17 +1,15 @@
-import {trips, TRIP_COUNT} from '../mock/array-trips.js';
 import AbstractView from "./abstract.js";
+import {sortTime} from "../utils/trip.js";
 
 
-const priceAllTrips = () => {
+const priceAllTrips = (trips) => {
   let priceTrips = 0;
-  for (let i = 0; i < TRIP_COUNT; i++) {
-    priceTrips += trips[i].price;
-  }
+  trips.forEach((item) => (priceTrips += item.fullPrice));
   return priceTrips;
 };
 
-const getAllVisitCities = () => {
-  const cityName = trips.map((town) => town.city);
+const getAllVisitCities = (trips) => {
+  const cityName = trips.map((trip) => trip.destination.name);
   let cityBefore = ``;
   let massCities = [];
   for (let i = 0; i < cityName.length; i++) {
@@ -27,31 +25,37 @@ const getAllVisitCities = () => {
   }
 };
 
-const getAllTripDates = () => {
+const getAllTripDates = (trips) => {
+  trips.sort(sortTime);
   if (trips.length > 0) {
-    return `${trips[0].start.toLocaleString(`en-US`, {month: `long`})}  ${trips[0].start.getDate()}&nbsp;&mdash;&nbsp;${trips[trips.length - 1].finish.getDate()}`;
+    console.log(trips[0])
+    return `${trips[0].start.toLocaleString(`en-US`, {month: `long`})}  ${trips[0].start.getDate()}&nbsp;&mdash;&nbsp;${trips[trips.length - 1].finish.toLocaleString(`en-US`, {month: `long`})} ${trips[trips.length - 1].finish.getDate()}`;
   } else {
     return ``;
   }
 };
 
-const createTripInfo = () => {
+const createTripInfo = (trips) => {
   return `<section class="trip-main__trip-info  trip-info">
         <div class="trip-info__main">
-          <h1 class="trip-info__title">${getAllVisitCities()}</h1>
+          <h1 class="trip-info__title">${getAllVisitCities(trips)}</h1>
 
-          <p class="trip-info__dates">${getAllTripDates()}</p>
+          <p class="trip-info__dates">${getAllTripDates(trips)}</p>
         </div>
 
         <p class="trip-info__cost">
-          Total: &euro;&nbsp;<span class="trip-info__cost-value">${priceAllTrips()}</span>
+          Total: &euro;&nbsp;<span class="trip-info__cost-value">${priceAllTrips(trips)}</span>
         </p>
       </section>`;
 };
 
 export default class TripInfo extends AbstractView {
+  constructor(trips) {
+    super();
+    this._trips = trips;
+  }
   getTemplate() {
-    return createTripInfo();
+    return createTripInfo(this._trips);
   }
 }
 
