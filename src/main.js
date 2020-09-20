@@ -71,7 +71,7 @@ apiWithProvider.getTrips()
   render(tripControls, siteMenuComponent, RenderPosition.BEFOREEND);
   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
   const handleTripInfoRefresh = (trip) => {
-    let newChild = new TripInfo(trip);
+    const newChild = new TripInfo(trip);
     replace(newChild, tripInfo);
     tripInfo = newChild;
   };
@@ -86,11 +86,11 @@ apiWithProvider.getTrips()
 
 window.addEventListener(`load`, () => {
   navigator.serviceWorker.register(`/sw.js`)
-    .then(() => {
-      console.log(`ServiceWorker available`); // eslint-disable-line
-    }).catch(() => {
-      console.error(`ServiceWorker isn't available`); // eslint-disable-line
-    });
+  .then(() => {
+    console.log(`ServiceWorker available`); // eslint-disable-line
+  }).catch(() => {
+    console.error(`ServiceWorker isn't available`); // eslint-disable-line
+  });
 });
 
 window.addEventListener(`online`, () => {

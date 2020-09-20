@@ -58,8 +58,8 @@ const restaurant = {
 
 export const waypoints = [taxi, bus, train, ship, transport, drive, flight, check, sightseeing, restaurant];
 
-export let offersTrip = [];
-export let destinationsTrip = [];
+export const offersTrip = [];
+export const destinationsTrip = [];
 
 api.getOffers().then((trips) => {
   trips.forEach((item) => offersTrip.push(item));
