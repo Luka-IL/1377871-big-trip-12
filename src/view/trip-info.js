@@ -4,8 +4,10 @@ import {sortEvent} from "../utils/trip.js";
 
 const priceAllTrips = (trips) => {
   let priceTrips = 0;
-  trips.forEach((item) => (priceTrips += item.fullPrice));
-  return priceTrips;
+  return trips.reduce(
+      (accumulator, item) => (accumulator += item.fullPrice),
+      priceTrips
+  );
 };
 
 const getAllVisitCities = (trips) => {
@@ -13,10 +15,11 @@ const getAllVisitCities = (trips) => {
   const cityName = trips.map((trip) => trip.destination.name);
   let cityBefore = ``;
   const massCities = [];
-  for (let i = 0; i < cityName.length; i++) {
-    if (cityName[i] !== cityBefore) {
-      massCities.push(cityName[i]);
-      cityBefore = cityName[i];
+
+  for (let city of cityName) {
+    if (city !== cityBefore) {
+      massCities.push(city);
+      cityBefore = city;
     }
   }
   if (massCities.length <= 3) {

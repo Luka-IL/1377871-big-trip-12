@@ -5,22 +5,14 @@ import {actionTransport} from '../utils/common.js';
 import {logoTrip} from '../view/edit-event.js';
 
 
-const pointZero = (time) => {
-  let pointZeroCheck = ``;
-  if (time.getMinutes() < 10) {
-    pointZeroCheck = `0`;
-  } else {
-    pointZeroCheck = ``;
-  }
-  return pointZeroCheck;
-};
+const getPointZero = (time) => (time.getMinutes() < 10) ? `0` : ``;
 
 const generateOffers = (offer) => {
   if (offer === null) {
     return ``;
   }
   let numberOffer = 0;
-  const newOffers = offer.map((object) => {
+  return offer.map((object) => {
     numberOffer++;
     if (numberOffer < 4) {
       return `<li class='event__offer'>
@@ -32,7 +24,6 @@ const generateOffers = (offer) => {
       return ``;
     }
   }).join(``);
-  return newOffers;
 };
 
 const normalDuration = (duration) => {
@@ -58,9 +49,9 @@ export const createTripEvent = (trip) => {
 
           <div class='event__schedule'>
             <p class='event__time'>
-              <time class='event__start-time' datetime='${start}'>${start.getHours()}:${pointZero(start)}${start.getMinutes()}</time>
+              <time class='event__start-time' datetime='${start}'>${start.getHours()}:${getPointZero(start)}${start.getMinutes()}</time>
               &mdash;
-              <time class='event__end-time' datetime='${finish}'>${finish.getHours()}:${pointZero(finish)}${finish.getMinutes()}</time>
+              <time class='event__end-time' datetime='${finish}'>${finish.getHours()}:${getPointZero(finish)}${finish.getMinutes()}</time>
             </p>
             <p class='event__duration'>${normalDuration(duration)}</p>
           </div>

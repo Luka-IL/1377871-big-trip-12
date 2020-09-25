@@ -8,6 +8,7 @@ import {actionTransport} from '../utils/common.js';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
+
 const BLANK_TRIP = {
   destination: {
     name: ``,
@@ -15,12 +16,12 @@ const BLANK_TRIP = {
     pictures: []
   },
   duration: 0,
-  finish: `2020 02 26 09:00`,
+  finish: `Fri Sep 26 2020 12:00:00 GMT+0300 (Москва, стандартное время)`,
   isFavorite: false,
   isFavoriteFlag: false,
   offers: [],
   price: 0,
-  start: `2020 02 26, 08:00`,
+  start: `Fri Sep 25 2020 12:00:00 GMT+0300 (Москва, стандартное время)`,
   transport: `taxi`
 };
 
@@ -28,16 +29,13 @@ const BLANK_TRIP = {
 const toTransport = waypoints.filter((way) => way.action === `to`);
 const inTransport = waypoints.filter((way) => way.action === `in`);
 
-const humansDateStartDay = (start) => {
-  return moment(start).format(`D MM Y hh:mm`);
+const humansDate = (time) => {
+  return moment(time).format(`D MM Y hh:mm`);
 };
 
-const humansDateFinish = (finish) => {
-  return moment(finish).format(`D MM Y hh:mm`);
-};
 
 const generateCities = () => {
-  return destinationsTrip.map((city) => `<option class='event__destination-input' value=${city.name}></option>`
+  return destinationsTrip.map((city) => `<option class='event__destination-input' value='${city.name}'></option>`
   );
 };
 
@@ -46,10 +44,8 @@ export const logoTrip = (trip) => {
 };
 
 
-const createPictureDestination = (pictures) => {
-  const trips = pictures.map((item) => `<img class='event__pho to' src='${item.src}' alt='Event photo'>`);
-  return trips;
-};
+const createPictureDestination = (pictures) => pictures.map((item) => `<img class='event__photo' src='${item.src}' alt='Event photo'>`);
+
 
 const createOffersTransport = (transport, offers) => {
   const typeTransport = offersTrip.filter((item) => item.type === transport)[0];
@@ -81,14 +77,14 @@ const generateActionTransport = (action) => {
   ).join(``);
 };
 
-const createEditTripEvent = (data) => {
-  const {transport, destination, price, isFavoriteFlag, offers, isSaving, isDeleting, isDisabled, start, finish} = data;
+const createEditEvent = (trip) => {
+  const {transport, destination, price, isFavoriteFlag, offers, isSaving, isDeleting, isDisabled, start, finish} = trip;
   return `<form class='event  event--edit' action='#' method='post'>
                     <header class='event__header'>
                       <div class='event__type-wrapper'>
                         <label class='event__type  event__type-btn' for='event-type-toggle-1'>
                           <span class='visually-hidden'>Choose event type</span>
-                          <img class='event__type-icon' width='17' height='17' src='${logoTrip(data)}' alt='Event type icon'>
+                          <img class='event__type-icon' width='17' height='17' src='${logoTrip(trip)}' alt='Event type icon'>
                         </label>
                         <input class='event__type-toggle  visually-hidden' id='event-type-toggle-1' type='checkbox'>
 
@@ -119,12 +115,12 @@ const createEditTripEvent = (data) => {
                         <label class='visually-hidden' for='event-start-time-1'>
                           From
                         </label>
-                        <input class='event__input  event__input--time' id='event-start-time-1' type='text' name='event-start-time' value='${humansDateStartDay(start)}'>
+                        <input class='event__input  event__input--time' id='event-start-time-1' type='text' name='event-start-time' value='${humansDate(start)}'>
                         &mdash;
                         <label class='visually-hidden' for='event-end-time-1'>
                           To
                         </label>
-                        <input class='event__input  event__input--time' id='event-end-time-1' type='text' name='event-end-time' value='${humansDateFinish(finish)}'>
+                        <input class='event__input  event__input--time' id='event-end-time-1' type='text' name='event-end-time' value='${humansDate(finish)}'>
                       </div>
 
                       <div class='event__field-group  event__field-group--price'>
@@ -175,12 +171,12 @@ const createEditTripEvent = (data) => {
                   </form>`;
 };
 
-export default class EditTripEvent extends SmartView {
+export default class EditEvent extends SmartView {
   constructor(trip = BLANK_TRIP) {
     super();
     this._datepickerStart = null;
     this._datepickerFinish = null;
-    this._data = EditTripEvent.parseTripToData(trip);
+    this._data = EditEvent.parseTripToData(trip);
     this._offers = trip.offers;
 
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
@@ -233,7 +229,7 @@ export default class EditTripEvent extends SmartView {
   }
 
   getTemplate() {
-    return createEditTripEvent(this._data);
+    return createEditEvent(this._data);
   }
 
   restoreHandlers() {
@@ -241,11 +237,6 @@ export default class EditTripEvent extends SmartView {
     this._setDatepicker();
     this.setSubmitFormEditEvent(this._callback.submitForm);
     this.setDeleteClickHandler(this._callback.deleteClick);
-  }
-
-  _handleSubmitFormEditEvent(evt) {
-    evt.preventDefault();
-    this._callback.submitForm(EditTripEvent.parseDataToTrip(this._data));
   }
 
   setClickFavoriteStar(callback) {
@@ -275,39 +266,48 @@ export default class EditTripEvent extends SmartView {
     const inputsTransport = this.getElement().querySelectorAll(`.event__type-input`);
     inputsTransport.forEach((item) => item.addEventListener(`change`, this._changeTransportClickHandler));
 
-    this.getElement()
-      .querySelector(`.event__favorite-checkbox`)
-      .addEventListener(`change`, this._favoriteClickHandler);
-
     const offersButtons = this.getElement().querySelectorAll(`.event__offer-checkbox`);
     if (offersButtons.length > 0) {
       offersButtons.forEach((item) => item.addEventListener(`change`, this._offerClickHandler));
-    } else {
-      return;
     }
   }
 
+  _handleSubmitFormEditEvent(evt) {
+    evt.preventDefault();
+    this._callback.submitForm(EditEvent.parseDataToTrip(this._data));
+  }
+
   _startChangeHandler([userDate]) {
-    this.updateData({
-      start: userDate
-    });
+    if (new Date(this._data.finish) > new Date(userDate)) {
+      this.updateData({
+        start: userDate
+      });
+    } else {
+      this.shakeWithoutCallback();
+    }
   }
 
   _finishChangeHandler([userDate]) {
-    if (this._data.start < userDate) {
+    if (new Date(this._data.start) < new Date(userDate)) {
       this.updateData({
         finish: userDate
       });
     } else {
-      this.shake();
+      this.shakeWithoutCallback();
     }
   }
 
   _priceInputHandler(evt) {
-    this.updateData({
-      price: Number(evt.target.value)
-    }, true);
+    if (Number(evt.target.value) > 0) {
+      this.updateData({
+        price: Number(evt.target.value)
+      }, true);
+    } else {
+      evt.target.value = 0;
+      this.shakeWithoutCallback();
+    }
   }
+
 
   _tripDestinationHandler(evt) {
     const actualDestination = destinationsTrip.filter((item) => (item.name === evt.target.value))[0];
@@ -316,15 +316,18 @@ export default class EditTripEvent extends SmartView {
         destination: actualDestination,
       });
     } else {
-      this.shake();
+      evt.target.value = ``;
+      this.shakeWithoutCallback();
     }
   }
 
-  _favoriteClickHandler() {
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
     this.updateData({
       isFavorite: !this._data.isFavorite,
       isFavoriteFlag: !this._data.isFavoriteFlag
     }, true);
+    this._callback.clickFavorite(EditEvent.parseDataToTrip(this._data));
   }
 
   _changeTransportClickHandler(evt) {
@@ -354,12 +357,12 @@ export default class EditTripEvent extends SmartView {
 
   _formDeleteClickHandler(evt) {
     evt.preventDefault();
-    this._callback.deleteClick(EditTripEvent.parseDataToTrip(this._data));
+    this._callback.deleteClick(EditEvent.parseDataToTrip(this._data));
   }
 
   reset(trip) {
     this.updateData(
-        EditTripEvent.parseTripToData(trip)
+        EditEvent.parseTripToData(trip)
     );
   }
 

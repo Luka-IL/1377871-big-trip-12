@@ -35,12 +35,10 @@ const generateCities = () => {
   );
 };
 
-const createPictureDestination = () => {
-  const trips = new Array(5).fill().map(() => `<img class="event__photo" src="http://picsum.photos/248/152?r=${Math.random()}" alt="Event photo">`);
-  return trips;
-};
+const createPictureDestination = (pictures) => pictures.map((item) => `<img class='event__pho to' src='${item.src}' alt='Event photo'>`);
 
-const createAddTripEvent = (trip) => {
+
+const createAddEvent = (trip) => {
   return `<form class="trip-events__item  event  event--edit" action="#" method="post">
             <header class="event__header">
               <div class="event__type-wrapper">
@@ -153,7 +151,7 @@ const createAddTripEvent = (trip) => {
 
               <div class="event__photos-container">
                 <div class="event__photos-tape">
-                ${createPictureDestination()}
+                ${createPictureDestination(trip.destination.pictures)}
                 </div>
               </div>
             </section>
@@ -161,24 +159,13 @@ const createAddTripEvent = (trip) => {
           </form>`;
 };
 
-export default class AddTripEvent extends AbstractView {
+export default class AddEvent extends AbstractView {
   constructor(trip) {
     super();
     this._trip = trip;
-    this._submitFormEvent = this._submitFormEvent.bind(this);
   }
 
   getTemplate() {
-    return createAddTripEvent(this._trip);
-  }
-
-  _submitFormEvent(evt) {
-    evt.preventDefault();
-    this._callback.submitForm(this._trip);
-  }
-
-  setSubmitFormEvent(callback) {
-    this._callback.submitForm = callback;
-    this.getElement().addEventListener(`submit`, this._submitFormEvent);
+    return createAddEvent(this._trip);
   }
 }

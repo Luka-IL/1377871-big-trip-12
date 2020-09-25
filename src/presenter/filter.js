@@ -1,4 +1,4 @@
-import TripListFilter from "../view/trip-filter.js";
+import TripFilter from "../view/trip-filter.js";
 import {render, RenderPosition, replace, remove} from "../utils/render.js";
 import {FilterType, UpdateType} from "../const.js";
 
@@ -24,7 +24,7 @@ export default class Filter {
     const filters = this._getFilters();
     const prevFilterComponent = this._filterComponent;
 
-    this._filterComponent = new TripListFilter(filters, this._currentFilter);
+    this._filterComponent = new TripFilter(filters, this._currentFilter);
     this._filterComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
 
     if (prevFilterComponent === null) {

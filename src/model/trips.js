@@ -1,10 +1,9 @@
 import Observer from "../utils/observer.js";
 
-const fullPrice = (trip) => {
+const getFullPrice = (trip) => {
   let offersPrice = 0;
   trip.offers.forEach((item) => (offersPrice += item.price));
-  const allPrice = trip.base_price + offersPrice;
-  return allPrice;
+  return (trip.base_price + offersPrice);
 };
 
 export default class Trips extends Observer {
@@ -74,7 +73,7 @@ export default class Trips extends Observer {
           price: trip.base_price,
           duration: Math.round((new Date(trip.date_to) - new Date(trip.date_from)) / 60000),
           isFavorite: trip.is_favorite,
-          fullPrice: fullPrice(trip)
+          fullPrice: getFullPrice(trip)
         }
     );
 

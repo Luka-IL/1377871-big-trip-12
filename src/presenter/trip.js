@@ -1,5 +1,5 @@
 import TripEvent from '../view/trip-event.js';
-import EditTripEvent from '../view/edit-event.js';
+import EditEvent from '../view/edit-event.js';
 import {RenderPosition, replace, render, remove} from "../utils/render.js";
 import {UserAction, UpdateType} from "../const.js";
 
@@ -16,8 +16,8 @@ export const State = {
 
 
 export default class Trip {
-  constructor(tripListElement, changeData, changeMode) {
-    this._tripListElement = tripListElement;
+  constructor(tripList, changeData, changeMode) {
+    this._tripList = tripList;
     this._changeData = changeData;
     this._changeMode = changeMode;
 
@@ -28,6 +28,7 @@ export default class Trip {
     this._handleClickCardArrow = this._handleClickCardArrow.bind(this);
     this._handleSubmitFormEditEvent = this._handleSubmitFormEditEvent.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
+    this._handleFavoriteClick = this._handleFavoriteClick.bind(this)
   }
 
   init(trip) {
@@ -37,7 +38,7 @@ export default class Trip {
     const prevtripAddComponent = this._tripEditComponent;
 
     this._tripComponent = new TripEvent(trip);
-    this._tripEditComponent = new EditTripEvent(trip);
+    this._tripEditComponent = new EditEvent(trip);
 
     this._tripComponent.setClickCardArrow(this._handleClickCardArrow);
     this._tripEditComponent.setSubmitFormEditEvent(this._handleSubmitFormEditEvent);
@@ -45,7 +46,7 @@ export default class Trip {
     this._tripEditComponent.setDeleteClickHandler(this._handleDeleteClick);
 
     if (prevTripComponent === null || prevtripAddComponent === null) {
-      render(this._tripListElement, this._tripComponent, RenderPosition.BEFOREEND);
+      render(this._tripList, this._tripComponent, RenderPosition.BEFOREEND);
       return;
     }
 
@@ -105,15 +106,18 @@ export default class Trip {
     document.addEventListener(`keydown`, this._onEscKeyDown);
   }
 
-  _handleEscEditForm() {
-    this._replaceFormToCard();
-    document.removeEventListener(`keydown`, this._onEscKeyDown);
-  }
-
   _handleSubmitFormEditEvent(trip) {
     this._changeData(
         UserAction.UPDATE_TRIP,
         UpdateType.MAJOR,
+        trip
+    );
+  }
+
+  _handleFavoriteClick(trip) {
+    this._changeData(
+        UserAction.UPDATE_TRIP,
+        UpdateType.PATCH,
         trip
     );
   }
@@ -145,6 +149,7 @@ export default class Trip {
       evt.preventDefault();
       this._tripEditComponent.reset(this._trip);
       this._replaceFormToCard();
+      this._tripEditComponent.setClickFavoriteStar(this._handleFavoriteClick);
     }
   }
 }
