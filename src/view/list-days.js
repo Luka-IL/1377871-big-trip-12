@@ -1,13 +1,13 @@
 import AbstractView from "./abstract.js";
 
-export const createTripListDays = () => {
+export const createListDays = () => {
   return (
     `<ul class="trip-days">
     </ul>`
   );
 };
-export default class TripListDays extends AbstractView {
+export default class ListDays extends AbstractView {
   getTemplate() {
-    return createTripListDays();
+    return createListDays();
   }
 }

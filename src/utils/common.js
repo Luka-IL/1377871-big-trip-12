@@ -16,6 +16,4 @@ export const actionTransport = (transport) => {
   return activeTransport.action;
 };
 
-export const getRandomBoolean = () => Boolean(getRandomInteger(0, 1));
-
 

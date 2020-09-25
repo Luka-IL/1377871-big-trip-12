@@ -1,5 +1,5 @@
 import TripEvent from '../view/trip-event.js';
-import EditTripEvent from '../view/edit-event.js';
+import EditEvent from '../view/edit-event.js';
 import {RenderPosition, replace, render, remove} from "../utils/render.js";
 import {UserAction, UpdateType} from "../const.js";
 
@@ -37,7 +37,7 @@ export default class Trip {
     const prevtripAddComponent = this._tripEditComponent;
 
     this._tripComponent = new TripEvent(trip);
-    this._tripEditComponent = new EditTripEvent(trip);
+    this._tripEditComponent = new EditEvent(trip);
 
     this._tripComponent.setClickCardArrow(this._handleClickCardArrow);
     this._tripEditComponent.setSubmitFormEditEvent(this._handleSubmitFormEditEvent);
@@ -103,11 +103,6 @@ export default class Trip {
   _handleClickCardArrow() {
     this._replaceCardToForm();
     document.addEventListener(`keydown`, this._onEscKeyDown);
-  }
-
-  _handleEscEditForm() {
-    this._replaceFormToCard();
-    document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
 
   _handleSubmitFormEditEvent(trip) {

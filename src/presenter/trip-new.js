@@ -1,4 +1,4 @@
-import EditTripEvent from "../view/edit-event.js";
+import EditEvent from "../view/edit-event.js";
 import {remove, render, RenderPosition} from "../utils/render.js";
 import {UserAction, UpdateType} from "../const.js";
 
@@ -22,11 +22,9 @@ export default class TripNew {
       return;
     }
 
-    this._tripEditComponent = new EditTripEvent();
+    this._tripEditComponent = new EditEvent();
     this._tripEditComponent.setSubmitFormEditEvent(this._handleFormSubmit);
     this._tripEditComponent.setDeleteClickHandler(this._handleDeleteClick);
-
-
     render(this._tripListContainer, this._tripEditComponent, RenderPosition.AFTERBEGIN);
 
     document.addEventListener(`keydown`, this._escKeyDownHandler);
@@ -61,17 +59,20 @@ export default class TripNew {
         isDeleting: false
       });
     };
-
     this._tripEditComponent.shake(resetFormState);
   }
 
   _handleFormSubmit(trip) {
-    this._changeData(
-        UserAction.ADD_TRIP,
-        UpdateType.MINOR,
-        trip
-    );
-    this.destroy();
+    if (trip.destination.name !== ``) {
+      this._changeData(
+          UserAction.ADD_TRIP,
+          UpdateType.MINOR,
+          trip
+      );
+      this.destroy();
+    } else {
+      this.setAborting();
+    }
   }
 
   _handleDeleteClick() {

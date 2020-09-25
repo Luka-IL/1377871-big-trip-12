@@ -86,12 +86,7 @@ apiWithProvider.getTrips()
 });
 
 window.addEventListener(`load`, () => {
-  navigator.serviceWorker.register(`/sw.js`)
-  .then(() => {
-    console.log(`ServiceWorker available`); // eslint-disable-line
-  }).catch(() => {
-    console.error(`ServiceWorker isn't available`); // eslint-disable-line
-  });
+  navigator.serviceWorker.register(`/sw.js`);
 });
 
 window.addEventListener(`online`, () => {

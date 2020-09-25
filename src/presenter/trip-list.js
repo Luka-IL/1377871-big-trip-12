@@ -1,9 +1,8 @@
-/* eslint-disable indent */
-import TripListDays from '../view/list-days.js';
+import ListDays from '../view/list-days.js';
 import TripDay from '../view/trip-day.js';
 import TripEventsList from '../view/trip-events-list.js';
 import WithoutTripEvent from '../view/without-trip.js';
-import SortTripEvent from '../view/sort-events.js';
+import SortEvents from '../view/sort-events.js';
 import Trip, {State as TripPresenterViewState} from './trip.js';
 import TripNewPresenter from "./trip-new.js";
 import LoadingView from "../view/loading.js";
@@ -21,8 +20,7 @@ export default class TripList {
 
     this._isLoading = true;
     this._sortComponent = null;
-    this._tripListDays = null;
-
+    this._listDays = null;
     this._callback = {};
     this._withoutTripEvent = new WithoutTripEvent();
     this._dayCounter = 1;
@@ -88,11 +86,12 @@ export default class TripList {
         break;
       case UserAction.ADD_TRIP:
         this._tripNewPresenter.setSaving();
-
         this._api.addTrip(update).then((response) => {
+          console.log(this._tripNewPresenter)
           this._tripsModel.addTrip(updateType, response);
         })
-        .catch(() => {
+        .catch((error) => {
+          console.log(error)
           this._tripNewPresenter.setAborting();
         });
         break;
@@ -146,10 +145,10 @@ export default class TripList {
   _createNewSortTrips() {
     this._renderSort();
     this._tripDaySort = new TripDay();
-    this._tripListDays = new TripListDays();
+    this._listDays = new ListDays();
 
-    render(this._boardContainer, this._tripListDays, RenderPosition.BEFOREEND);
-    render(this._tripListDays, this._tripDaySort, RenderPosition.BEFOREEND);
+    render(this._boardContainer, this._listDays, RenderPosition.BEFOREEND);
+    render(this._listDays, this._tripDaySort, RenderPosition.BEFOREEND);
     render(this._tripDaySort, this._tripEventsList, RenderPosition.BEFOREEND);
     for (let i = 0; i < this._getTrips().length; i++) {
       this._renderTripEvent(this._tripEventsList, this._getTrips()[i]);
@@ -175,7 +174,7 @@ export default class TripList {
       this._sortComponent = null;
     }
 
-    this._sortComponent = new SortTripEvent(this._currentSortType);
+    this._sortComponent = new SortEvents(this._currentSortType);
     this._sortComponent.setInputSortListener(this._handleSortTypeChange);
 
     render(this._boardContainer, this._sortComponent, RenderPosition.AFTERBEGIN);
@@ -203,10 +202,10 @@ export default class TripList {
   }
 
   _createNewListDay() {
-    this._tripListDays = new TripListDays();
-    this._tripNewPresenter = new TripNewPresenter(this._tripListDays, this._handleViewAction);
+    this._listDays = new ListDays();
+    this._tripNewPresenter = new TripNewPresenter(this._listDays, this._handleViewAction);
 
-    render(this._boardContainer, this._tripListDays, RenderPosition.BEFOREEND);
+    render(this._boardContainer, this._listDays, RenderPosition.BEFOREEND);
     this._createNewDay();
   }
 
@@ -217,7 +216,7 @@ export default class TripList {
     this._tripEventsList = new TripEventsList();
 
 
-    render(this._tripListDays, EventsDay, RenderPosition.BEFOREEND);
+    render(this._listDays, EventsDay, RenderPosition.BEFOREEND);
     render(EventsDay, this._tripEventsList, RenderPosition.BEFOREEND);
 
     this._createNewTrips();
@@ -245,7 +244,7 @@ export default class TripList {
       .forEach((presenter) => presenter.destroy());
     this._eventPresenter = {};
 
-    remove(this._tripListDays);
+    remove(this._listDays);
     remove(this._sortComponent);
     remove(this._withoutTripEvent);
     remove(this._loadingComponent);
