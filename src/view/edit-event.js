@@ -44,10 +44,8 @@ export const logoTrip = (trip) => {
 };
 
 
-const createPictureDestination = (pictures) => {
-  const trips = pictures.map((item) => `<img class='event__photo' src='${item.src}' alt='Event photo'>`);
-  return trips;
-};
+const createPictureDestination = (pictures) => pictures.map((item) => `<img class='event__photo' src='${item.src}' alt='Event photo'>`);
+
 
 const createOffersTransport = (transport, offers) => {
   const typeTransport = offersTrip.filter((item) => item.type === transport)[0];
@@ -79,14 +77,14 @@ const generateActionTransport = (action) => {
   ).join(``);
 };
 
-const createEditEvent = (data) => {
-  const {transport, destination, price, isFavoriteFlag, offers, isSaving, isDeleting, isDisabled, start, finish} = data;
+const createEditEvent = (trip) => {
+  const {transport, destination, price, isFavoriteFlag, offers, isSaving, isDeleting, isDisabled, start, finish} = trip;
   return `<form class='event  event--edit' action='#' method='post'>
                     <header class='event__header'>
                       <div class='event__type-wrapper'>
                         <label class='event__type  event__type-btn' for='event-type-toggle-1'>
                           <span class='visually-hidden'>Choose event type</span>
-                          <img class='event__type-icon' width='17' height='17' src='${logoTrip(data)}' alt='Event type icon'>
+                          <img class='event__type-icon' width='17' height='17' src='${logoTrip(trip)}' alt='Event type icon'>
                         </label>
                         <input class='event__type-toggle  visually-hidden' id='event-type-toggle-1' type='checkbox'>
 
@@ -268,15 +266,9 @@ export default class EditEvent extends SmartView {
     const inputsTransport = this.getElement().querySelectorAll(`.event__type-input`);
     inputsTransport.forEach((item) => item.addEventListener(`change`, this._changeTransportClickHandler));
 
-    this.getElement()
-      .querySelector(`.event__favorite-checkbox`)
-      .addEventListener(`change`, this._favoriteClickHandler);
-
     const offersButtons = this.getElement().querySelectorAll(`.event__offer-checkbox`);
     if (offersButtons.length > 0) {
       offersButtons.forEach((item) => item.addEventListener(`change`, this._offerClickHandler));
-    } else {
-      return;
     }
   }
 
@@ -329,11 +321,13 @@ export default class EditEvent extends SmartView {
     }
   }
 
-  _favoriteClickHandler() {
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
     this.updateData({
       isFavorite: !this._data.isFavorite,
       isFavoriteFlag: !this._data.isFavoriteFlag
     }, true);
+    this._callback.clickFavorite(EditEvent.parseDataToTrip(this._data));
   }
 
   _changeTransportClickHandler(evt) {

@@ -3,8 +3,7 @@ import Observer from "../utils/observer.js";
 const getFullPrice = (trip) => {
   let offersPrice = 0;
   trip.offers.forEach((item) => (offersPrice += item.price));
-  const allPrice = trip.base_price + offersPrice;
-  return allPrice;
+  return (trip.base_price + offersPrice);
 };
 
 export default class Trips extends Observer {

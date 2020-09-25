@@ -35,10 +35,8 @@ const generateCities = () => {
   );
 };
 
-const createPictureDestination = (pictures) => {
-  const trips = pictures.map((item) => `<img class='event__pho to' src='${item.src}' alt='Event photo'>`);
-  return trips;
-};
+const createPictureDestination = (pictures) => pictures.map((item) => `<img class='event__pho to' src='${item.src}' alt='Event photo'>`);
+
 
 const createAddEvent = (trip) => {
   return `<form class="trip-events__item  event  event--edit" action="#" method="post">

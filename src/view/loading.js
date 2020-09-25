@@ -1,7 +1,7 @@
 import AbstractView from "./abstract.js";
 
 const createNoTripTemplate = () => {
-  return `<p class="board__no-tasks">
+  return `<p class="board__no-trips">
     Loading...
   </p>`;
 };

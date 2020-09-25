@@ -1,7 +1,7 @@
 import ListDays from '../view/list-days.js';
 import TripDay from '../view/trip-day.js';
 import TripEventsList from '../view/trip-events-list.js';
-import WithoutTripEvent from '../view/without-trip.js';
+import WithoutTrip from '../view/without-trip.js';
 import SortEvents from '../view/sort-events.js';
 import Trip, {State as TripPresenterViewState} from './trip.js';
 import TripNewPresenter from "./trip-new.js";
@@ -12,8 +12,8 @@ import {RenderPosition, render, remove} from "../utils/render.js";
 import {SortType, UpdateType, UserAction} from "../const.js";
 
 export default class TripList {
-  constructor(boardContainer, tripsModel, filterModel, api) {
-    this._boardContainer = boardContainer;
+  constructor(bigTripContainer, tripsModel, filterModel, api) {
+    this._bigTripContainer = bigTripContainer;
     this._tripsModel = tripsModel;
     this._filterModel = filterModel;
     this._api = api;
@@ -22,7 +22,7 @@ export default class TripList {
     this._sortComponent = null;
     this._listDays = null;
     this._callback = {};
-    this._withoutTripEvent = new WithoutTripEvent();
+    this._withoutTrip = new WithoutTrip();
     this._dayCounter = 1;
     this._numberTrip = 0;
     this._currentSortType = `event`;
@@ -87,11 +87,9 @@ export default class TripList {
       case UserAction.ADD_TRIP:
         this._tripNewPresenter.setSaving();
         this._api.addTrip(update).then((response) => {
-          console.log(this._tripNewPresenter)
           this._tripsModel.addTrip(updateType, response);
         })
-        .catch((error) => {
-          console.log(error)
+        .catch(() => {
           this._tripNewPresenter.setAborting();
         });
         break;
@@ -107,10 +105,10 @@ export default class TripList {
     }
   }
 
-  _handleModelEvent(updateType, data) {
+  _handleModelEvent(updateType, information) {
     switch (updateType) {
       case UpdateType.PATCH:
-        this._eventPresenter[data.id].init(data);
+        this._eventPresenter[information.id].init(information);
         break;
       case UpdateType.MINOR:
         this._clearBoard();
@@ -139,33 +137,33 @@ export default class TripList {
   }
 
   _renderLoading() {
-    render(this._boardContainer, this._loadingComponent, RenderPosition.AFTERBEGIN);
+    render(this._bigTripContainer, this._loadingComponent, RenderPosition.AFTERBEGIN);
   }
 
   _createNewSortTrips() {
     this._renderSort();
+    this._trips = this._getTrips();
     this._tripDaySort = new TripDay();
     this._listDays = new ListDays();
 
-    render(this._boardContainer, this._listDays, RenderPosition.BEFOREEND);
+    render(this._bigTripContainer, this._listDays, RenderPosition.BEFOREEND);
     render(this._listDays, this._tripDaySort, RenderPosition.BEFOREEND);
     render(this._tripDaySort, this._tripEventsList, RenderPosition.BEFOREEND);
-    for (let i = 0; i < this._getTrips().length; i++) {
-      this._renderTripEvent(this._tripEventsList, this._getTrips()[i]);
+    for (let trip of this._trips) {
+      this._renderTripEvent(this._tripEventsList, trip);
     }
   }
 
   _handleSortTypeChange(sortType) {
     if (this._currentSortType === sortType) {
       return;
+    }
+    this._currentSortType = sortType;
+    this._clearBoard();
+    if (sortType === `event`) {
+      this._renderBoard();
     } else {
-      this._currentSortType = sortType;
-      this._clearBoard();
-      if (sortType === `event`) {
-        this._renderBoard();
-      } else {
-        this._createNewSortTrips();
-      }
+      this._createNewSortTrips();
     }
   }
 
@@ -177,16 +175,17 @@ export default class TripList {
     this._sortComponent = new SortEvents(this._currentSortType);
     this._sortComponent.setInputSortListener(this._handleSortTypeChange);
 
-    render(this._boardContainer, this._sortComponent, RenderPosition.AFTERBEGIN);
+    render(this._bigTripContainer, this._sortComponent, RenderPosition.AFTERBEGIN);
   }
 
-  _renderTripEvent(tripListElement, trip) {
-    const tripEvent = new Trip(tripListElement, this._handleViewAction, this._handleModeChange);
+  _renderTripEvent(tripEventList, trip) {
+    const tripEvent = new Trip(tripEventList, this._handleViewAction, this._handleModeChange);
     tripEvent.init(trip);
     this._eventPresenter[trip.id] = tripEvent;
   }
 
   _renderBoard() {
+    this._trips = this._getTrips();
     if (this._isLoading) {
       this._renderLoading();
       return;
@@ -197,7 +196,7 @@ export default class TripList {
       this._createNewListDay();
 
     } else {
-      render(this._boardContainer, new WithoutTripEvent(), RenderPosition.BEFOREEND);
+      render(this._bigTripContainer, new WithoutTrip(), RenderPosition.BEFOREEND);
     }
   }
 
@@ -205,12 +204,12 @@ export default class TripList {
     this._listDays = new ListDays();
     this._tripNewPresenter = new TripNewPresenter(this._listDays, this._handleViewAction);
 
-    render(this._boardContainer, this._listDays, RenderPosition.BEFOREEND);
+    render(this._bigTripContainer, this._listDays, RenderPosition.BEFOREEND);
     this._createNewDay();
   }
 
   _createNewDay() {
-    const EventsDay = new TripDay(this._getTrips()[this._numberTrip], this._dayCounter).getElement();
+    const EventsDay = new TripDay(this._trips[this._numberTrip], this._dayCounter).getElement();
     this._dayCounter++;
 
     this._tripEventsList = new TripEventsList();
@@ -222,12 +221,19 @@ export default class TripList {
     this._createNewTrips();
   }
 
+  _dataTripNow(trips, number) {
+    return trips[number].start.getDate();
+  }
+
   _createNewTrips() {
-    const dataTripNow = this._getTrips()[this._numberTrip].start.getDate();
-    for (this._numberTrip; this._numberTrip < this._getTrips().length; this._numberTrip++) {
-      if (dataTripNow === this._getTrips()[this._numberTrip].start.getDate()) {
-        this._renderTripEvent(this._tripEventsList, this._getTrips()[this._numberTrip]);
-      } else if (this._getTrips().length > this._numberTrip) {
+    const trips = this._trips;
+    const dataTrip = (trip, number) => trip[number].start.getDate();
+    const dataTripNow = dataTrip(trips, this._numberTrip);
+
+    for (this._numberTrip; this._numberTrip < trips.length; this._numberTrip++) {
+      if (dataTripNow === dataTrip(trips, this._numberTrip)) {
+        this._renderTripEvent(this._tripEventsList, trips[this._numberTrip]);
+      } else if (trips.length > this._numberTrip) {
         this._createNewDay();
         this._numberTrip++;
       } else {
@@ -246,7 +252,7 @@ export default class TripList {
 
     remove(this._listDays);
     remove(this._sortComponent);
-    remove(this._withoutTripEvent);
+    remove(this._withoutTrip);
     remove(this._loadingComponent);
 
     this._numberTrip = 0;

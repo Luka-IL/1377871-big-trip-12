@@ -30,6 +30,7 @@ const handleSiteMenuActiveChose = (item) => {
 };
 
 let statisticsComponent = null;
+let prevMenuItem = `TABLE`;
 
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
@@ -41,17 +42,24 @@ const handleSiteMenuClick = (menuItem) => {
       allTrip.createTrip(handleSiteMenuActiveChose);
       break;
     case MenuItem.TABLE:
+      if (prevMenuItem === MenuItem.TABLE) {
+        return;
+      }
       allTrip.init();
       remove(statisticsComponent);
       handleSiteMenuActiveChose(`TABLE`);
       break;
     case MenuItem.STATS:
+      if (prevMenuItem === MenuItem.STATS) {
+        return;
+      }
       allTrip.destroy();
       statisticsComponent = new StatisticsView(tripsModel.getTrips());
       render(tripEvents, statisticsComponent, RenderPosition.BEFOREEND);
       handleSiteMenuActiveChose(`STATS`);
       break;
   }
+  prevMenuItem = menuItem;
 };
 
 const filterPresenter = new FilterPresenter(tripControls, filterModel, tripsModel);
@@ -77,13 +85,13 @@ apiWithProvider.getTrips()
     tripInfo = newChild;
   };
   allTrip.setRefreshPrice(handleTripInfoRefresh);
-})
+});/*
 .catch(() => {
   render(tripMain, new TripInfo(), RenderPosition.AFTERBEGIN);
   tripsModel.setTrips(UpdateType.INIT, []);
   render(tripControls, siteMenuComponent, RenderPosition.BEFOREEND);
   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
-});
+});*/
 
 window.addEventListener(`load`, () => {
   navigator.serviceWorker.register(`/sw.js`);

@@ -5,22 +5,14 @@ import {actionTransport} from '../utils/common.js';
 import {logoTrip} from '../view/edit-event.js';
 
 
-const getPointZero = (time) => {
-  let pointZeroCheck = ``;
-  if (time.getMinutes() < 10) {
-    pointZeroCheck = `0`;
-  } else {
-    pointZeroCheck = ``;
-  }
-  return pointZeroCheck;
-};
+const getPointZero = (time) => (time.getMinutes() < 10) ? `0` : ``;
 
 const generateOffers = (offer) => {
   if (offer === null) {
     return ``;
   }
   let numberOffer = 0;
-  const newOffers = offer.map((object) => {
+  return offer.map((object) => {
     numberOffer++;
     if (numberOffer < 4) {
       return `<li class='event__offer'>
@@ -32,7 +24,6 @@ const generateOffers = (offer) => {
       return ``;
     }
   }).join(``);
-  return newOffers;
 };
 
 const normalDuration = (duration) => {

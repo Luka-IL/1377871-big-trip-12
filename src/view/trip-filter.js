@@ -1,6 +1,6 @@
 import AbstractView from "./abstract.js";
 
-const createTripFilter = (filter, filterType) => {
+const createFilter = (filter, filterType) => {
   const {type, name} = filter;
   return `
   <div class="trip-filters__filter">
@@ -9,8 +9,8 @@ const createTripFilter = (filter, filterType) => {
   </div>`;
 };
 
-const createTripListFilter = (filters, filterType) => {
-  const tripFilters = filters.map((filter) => createTripFilter(filter, filterType)).join(``);
+const createTripFilter = (filters, filterType) => {
+  const tripFilters = filters.map((filter) => createFilter(filter, filterType)).join(``);
   return `<form class="trip-filters" action="#" method="get">
   ${tripFilters}
 
@@ -18,7 +18,7 @@ const createTripListFilter = (filters, filterType) => {
     </form>`;
 };
 
-export default class TripListFilter extends AbstractView {
+export default class TripFilter extends AbstractView {
 
   constructor(filters, currentFilterType) {
     super();
@@ -40,6 +40,6 @@ export default class TripListFilter extends AbstractView {
   }
 
   getTemplate() {
-    return createTripListFilter(this._filters, this._currentFilterType);
+    return createTripFilter(this._filters, this._currentFilterType);
   }
 }
