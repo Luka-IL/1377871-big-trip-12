@@ -13,6 +13,7 @@ export default class TripNew {
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
+    this._handleClickFavorite = this._handleClickFavorite.bind(this);
   }
 
   init(callback) {
@@ -25,6 +26,7 @@ export default class TripNew {
     this._tripEditComponent = new EditEvent();
     this._tripEditComponent.setSubmitFormEditEvent(this._handleFormSubmit);
     this._tripEditComponent.setDeleteClickHandler(this._handleDeleteClick);
+    this._tripEditComponent.setClickFavoriteStar(this._handleClickFavorite);
     render(this._tripListContainer, this._tripEditComponent, RenderPosition.AFTERBEGIN);
 
     document.addEventListener(`keydown`, this._escKeyDownHandler);
@@ -73,6 +75,11 @@ export default class TripNew {
     } else {
       this.setAborting();
     }
+  }
+
+  _handleClickFavorite(trip) {
+    this._tripEditComponent.updateData(
+        trip, true);
   }
 
   _handleDeleteClick() {

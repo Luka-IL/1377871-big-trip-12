@@ -191,6 +191,7 @@ export default class EditEvent extends SmartView {
 
     this._setInnerHandlers();
     this._setDatepicker();
+
   }
 
   removeElement() {
@@ -235,6 +236,7 @@ export default class EditEvent extends SmartView {
   restoreHandlers() {
     this._setInnerHandlers();
     this._setDatepicker();
+    this.setClickFavoriteStar(this._callback.clickFavorite);
     this.setSubmitFormEditEvent(this._callback.submitForm);
     this.setDeleteClickHandler(this._callback.deleteClick);
   }
