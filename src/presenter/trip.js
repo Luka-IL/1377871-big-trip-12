@@ -28,7 +28,7 @@ export default class Trip {
     this._handleClickCardArrow = this._handleClickCardArrow.bind(this);
     this._handleSubmitFormEditEvent = this._handleSubmitFormEditEvent.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
-    this._handleFavoriteClick = this._handleFavoriteClick.bind(this)
+    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
   }
 
   init(trip) {
