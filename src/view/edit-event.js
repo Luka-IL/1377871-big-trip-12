@@ -22,7 +22,7 @@ const BLANK_TRIP = {
   offers: [],
   price: 0,
   start: `Fri Sep 25 2020 12:00:00 GMT+0300 (Москва, стандартное время)`,
-  transport: `taxi`
+  transport: `bus`
 };
 
 

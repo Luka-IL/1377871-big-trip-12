@@ -149,7 +149,7 @@ export default class TripList {
     render(this._bigTripContainer, this._listDays, RenderPosition.BEFOREEND);
     render(this._listDays, this._tripDaySort, RenderPosition.BEFOREEND);
     render(this._tripDaySort, this._tripEventsList, RenderPosition.BEFOREEND);
-    for (let trip of this._trips) {
+    for (const trip of this._trips) {
       this._renderTripEvent(this._tripEventsList, trip);
     }
   }

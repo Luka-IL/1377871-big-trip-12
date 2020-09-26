@@ -3,7 +3,7 @@ import {sortEvent} from "../utils/trip.js";
 
 
 const priceAllTrips = (trips) => {
-  let priceTrips = 0;
+  const priceTrips = 0;
   return trips.reduce(
       (accumulator, item) => (accumulator += item.fullPrice),
       priceTrips
@@ -16,7 +16,7 @@ const getAllVisitCities = (trips) => {
   let cityBefore = ``;
   const massCities = [];
 
-  for (let city of cityName) {
+  for (const city of cityName) {
     if (city !== cityBefore) {
       massCities.push(city);
       cityBefore = city;
