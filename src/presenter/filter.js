@@ -24,7 +24,7 @@ export default class Filter {
     const filters = this._getFilters();
     const prevFilterComponent = this._filterComponent;
 
-    this._filterComponent = new TripFilter(filters, this._currentFilter);
+    this._filterComponent = new TripFilter(filters, this._currentFilter, this._tripsModel.getTrips());
     this._filterComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
 
     if (prevFilterComponent === null) {

@@ -65,7 +65,7 @@ export default class TripNew {
   }
 
   _handleFormSubmit(trip) {
-    if (trip.destination.name !== ``) {
+    if ((trip.destination.name !== ``) & (trip.price !== ``)) {
       this._changeData(
           UserAction.ADD_TRIP,
           UpdateType.MINOR,

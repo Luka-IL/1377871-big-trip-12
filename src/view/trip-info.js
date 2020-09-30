@@ -24,9 +24,9 @@ const getAllVisitCities = (trips) => {
   }
   if (massCities.length <= 3) {
     return massCities.map((point) => `${point}`).join(` &mdash; `);
-  } else {
-    return `${massCities[0]} &mdash; ... &mdash; ${massCities[massCities.length - 1]}`;
   }
+  return `${massCities[0]} &mdash; ... &mdash; ${massCities[massCities.length - 1]}`;
+
 };
 
 const getAllTripDates = (trips) => {

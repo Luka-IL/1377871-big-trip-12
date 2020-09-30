@@ -5,6 +5,7 @@ import {waypoints, offersTrip, destinationsTrip} from '../const.js';
 import {toFirstLetterUp} from '../utils/common.js';
 import flatpickr from 'flatpickr';
 import {actionTransport} from '../utils/common.js';
+import {getFullPrice} from '../model/trips.js';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
@@ -16,13 +17,14 @@ const BLANK_TRIP = {
     pictures: []
   },
   duration: 0,
-  finish: `Fri Sep 26 2020 12:00:00 GMT+0300 (Москва, стандартное время)`,
+  finish: new Date(`2020-09-25T09:00:00`),
   isFavorite: false,
   isFavoriteFlag: false,
   offers: [],
-  price: 0,
-  start: `Fri Sep 25 2020 12:00:00 GMT+0300 (Москва, стандартное время)`,
-  transport: `bus`
+  price: ``,
+  start: new Date(`2020-09-25T08:00:00`),
+  transport: `bus`,
+  isCancel: true
 };
 
 
@@ -33,10 +35,15 @@ const humansDate = (time) => {
   return moment(time).format(`D MM Y hh:mm`);
 };
 
+const durationTime = (finishTime, startTime) => Math.round((new Date(finishTime) - new Date(startTime)) / 60000);
 
 const generateCities = () => {
   return destinationsTrip.map((city) => `<option class='event__destination-input' value='${city.name}'></option>`
   );
+};
+
+const offersTransport = (transport) => {
+  return offersTrip.filter((item) => item.type === transport)[0];
 };
 
 export const logoTrip = (trip) => {
@@ -46,9 +53,9 @@ export const logoTrip = (trip) => {
 
 const createPictureDestination = (pictures) => pictures.map((item) => `<img class='event__photo' src='${item.src}' alt='Event photo'>`);
 
+const createCancelOrDelete = (trip, isDeleting) => trip.isCancel ? `cancel` : `${isDeleting ? `deleting...` : `delete`}`;
 
-const createOffersTransport = (transport, offers) => {
-  const typeTransport = offersTrip.filter((item) => item.type === transport)[0];
+const createOffersTransport = (transport, offers, typeTransport) => {
   let numIdInput = 0;
   if (typeTransport !== undefined) {
     return typeTransport.offers.map((item) => {
@@ -65,7 +72,6 @@ const createOffersTransport = (transport, offers) => {
   } else {
     return ``;
   }
-
 };
 
 const generateActionTransport = (action) => {
@@ -79,6 +85,7 @@ const generateActionTransport = (action) => {
 
 const createEditEvent = (trip) => {
   const {transport, destination, price, isFavoriteFlag, offers, isSaving, isDeleting, isDisabled, start, finish} = trip;
+  const typeTransport = offersTransport(transport);
   return `<form class='event  event--edit' action='#' method='post'>
                     <header class='event__header'>
                       <div class='event__type-wrapper'>
@@ -134,7 +141,7 @@ const createEditEvent = (trip) => {
                       ${isSaving ? `saving...` : `save`}
                       </button>                      
                       <button class="event__reset-btn" type="button" ${isDisabled ? `disabled` : ``}>
-                        ${isDeleting ? `deleting...` : `delete`}
+                      ${createCancelOrDelete(trip, isDeleting)}
                       </button>
                       <input id='event-favorite-1' class='event__favorite-checkbox  visually-hidden' type='checkbox' name='event-favorite' ${isFavoriteFlag ? `checked` : ``}>
                       <label class='event__favorite-btn' for='event-favorite-1'>
@@ -151,10 +158,10 @@ const createEditEvent = (trip) => {
 
                     <section class='event__details'>
                       <section class='event__section  event__section--offers'>
-                        <h3 class='event__section-title  event__section-title--offers'>${(offers.length > 0) ? `Offers` : ``}</h3>
+                        <h3 class='event__section-title  event__section-title--offers'>${(typeTransport.offers.length > 0) ? `Offers` : ``}</h3>
 
                         <div class='event__available-offers'>
-                          ${createOffersTransport(transport, offers)}
+                          ${createOffersTransport(transport, offers, typeTransport)}
                         </div>
                       </section>
                       <section class='event__section  event__section--destination'>
@@ -282,7 +289,8 @@ export default class EditEvent extends SmartView {
   _startChangeHandler([userDate]) {
     if (new Date(this._data.finish) > new Date(userDate)) {
       this.updateData({
-        start: userDate
+        start: userDate,
+        duration: durationTime(this._data.finish, userDate)
       });
     } else {
       this.shakeWithoutCallback();
@@ -292,7 +300,8 @@ export default class EditEvent extends SmartView {
   _finishChangeHandler([userDate]) {
     if (new Date(this._data.start) < new Date(userDate)) {
       this.updateData({
-        finish: userDate
+        finish: userDate,
+        duration: durationTime(userDate, this._data.start)
       });
     } else {
       this.shakeWithoutCallback();
@@ -300,12 +309,13 @@ export default class EditEvent extends SmartView {
   }
 
   _priceInputHandler(evt) {
-    if (Number(evt.target.value) > 0) {
+    if ((Number(evt.target.value) >= 0) || (evt.target.value === ``)) {
       this.updateData({
-        price: Number(evt.target.value)
+        price: Number(evt.target.value),
+        fullPrice: getFullPrice(this._data, Number(evt.target.value))
       }, true);
     } else {
-      evt.target.value = 0;
+      evt.target.value = ``;
       this.shakeWithoutCallback();
     }
   }
@@ -385,6 +395,7 @@ export default class EditEvent extends SmartView {
 
     data = Object.assign({}, data);
     delete data.isFavoriteFlag;
+    delete data.isCancel;
     delete data.isDisabled;
     delete data.isSaving;
     delete data.isDeleting;

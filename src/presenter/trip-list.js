@@ -99,16 +99,19 @@ export default class TripList {
           this._tripsModel.deleteTrip(updateType, update);
         })
         .catch(() => {
+          if (this._update === undefined) {
+            return;
+          }
           this._eventPresenter[update.id].setViewState(TripPresenterViewState.ABORTING);
         });
         break;
     }
   }
 
-  _handleModelEvent(updateType, information) {
+  _handleModelEvent(updateType, trip) {
     switch (updateType) {
       case UpdateType.PATCH:
-        this._eventPresenter[information.id].init(information);
+        this._eventPresenter[trip.id].init(trip);
         break;
       case UpdateType.MINOR:
         this._clearBoard();

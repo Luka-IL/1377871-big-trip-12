@@ -5,7 +5,7 @@ import {actionTransport} from '../utils/common.js';
 import {logoTrip} from '../view/edit-event.js';
 
 
-const getPointZero = (time) => (time.getMinutes() < 10) ? `0` : ``;
+const getZero = (time) => (time.getMinutes() < 10) ? `0` : ``;
 
 const generateOffers = (offer) => {
   if (offer === null) {
@@ -31,9 +31,8 @@ const normalDuration = (duration) => {
   const minuteDuration = duration % 60;
   if (hourDuration >= 1) {
     return `${hourDuration}H ${minuteDuration}M`;
-  } else {
-    return `${minuteDuration}M`;
   }
+  return `${minuteDuration}M`;
 };
 
 export const createTripEvent = (trip) => {
@@ -49,9 +48,9 @@ export const createTripEvent = (trip) => {
 
           <div class='event__schedule'>
             <p class='event__time'>
-              <time class='event__start-time' datetime='${start}'>${start.getHours()}:${getPointZero(start)}${start.getMinutes()}</time>
+              <time class='event__start-time' datetime='${start}'>${start.getHours()}:${getZero(start)}${start.getMinutes()}</time>
               &mdash;
-              <time class='event__end-time' datetime='${finish}'>${finish.getHours()}:${getPointZero(finish)}${finish.getMinutes()}</time>
+              <time class='event__end-time' datetime='${finish}'>${finish.getHours()}:${getZero(finish)}${finish.getMinutes()}</time>
             </p>
             <p class='event__duration'>${normalDuration(duration)}</p>
           </div>

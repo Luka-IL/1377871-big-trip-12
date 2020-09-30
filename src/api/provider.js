@@ -3,7 +3,7 @@ import TripsModel from "../model/trips.js";
 
 const getSyncedTrips = (items) => {
   return items.filter(({success}) => success)
-    .map(({payload}) => payload.trip);
+    .map(({payload}) => payload.point);
 };
 
 const createStoreStructure = (items) => {

@@ -11,7 +11,7 @@ import Api from './api/index.js';
 import Store from "./api/store.js";
 import Provider from "./api/provider.js";
 
-const AUTHORIZATION = `Basic xo1w2301k29381a`;
+const AUTHORIZATION = `Basic xo1w2901k33189a`;
 const END_POINT = `https://12.ecmascript.pages.academy/big-trip`;
 const STORE_PREFIX = `bigtrip-localstorage`;
 const STORE_VER = `v12`;
@@ -84,13 +84,13 @@ apiWithProvider.getTrips()
     tripInfo = newChild;
   };
   allTrip.setRefreshPrice(handleTripInfoRefresh);
-});/*
+})
 .catch(() => {
   render(tripMain, new TripInfo(), RenderPosition.AFTERBEGIN);
   tripsModel.setTrips(UpdateType.INIT, []);
   render(tripControls, siteMenuComponent, RenderPosition.BEFOREEND);
   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
-});*/
+});
 
 window.addEventListener(`load`, () => {
   navigator.serviceWorker.register(`/sw.js`);

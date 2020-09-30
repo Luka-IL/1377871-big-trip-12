@@ -262,6 +262,10 @@ main {
     opacity: 1; }
   .trip-filters__filter-label:active {
     opacity: 0.6; }
+  .filter-label--disabled:hover {
+      cursor: default;
+      transition: none;
+      opacity: 0.6; }
 
 .trip-filters__filter-input:checked + .trip-filters__filter-label {
   opacity: 1;
@@ -954,4 +958,8 @@ main {
   }
   .shake {
     animation: shake 0.6s;
+  }
+
+  .input:disabled {
+    cursor: default;
   }
